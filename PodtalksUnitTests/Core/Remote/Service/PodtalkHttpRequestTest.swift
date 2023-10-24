@@ -11,11 +11,10 @@ import XCTest
 final class PodtalkHttpRequestTest: XCTestCase {
     
     func test_genres_endpointURL() {
-//        TODO: do we need to pass url in tests too?
-        let baseURL = "https://listen-api-test.listennotes.com/api/v2"
         let sut = PodtalkHttpRequest(endpoint: .genres).getURLRequest()?.url
+        
         XCTAssertEqual(sut?.scheme, "https", "scheme")
-        XCTAssertEqual(sut?.host, "listen-api-test.listennotes.com", "host")
+        XCTAssertEqual(sut?.host, "listen-api-test.listennotes.com", "host") // TODO: do we need to pass url in tests too?
         XCTAssertEqual(sut?.path, "/api/v2/genres", "path")
     }
     
