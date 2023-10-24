@@ -9,6 +9,6 @@ import Foundation
 
 enum PodtalkEndpoint: String {
     case genres
-    case podcasts
+    case best_podcasts
     case episodes
 }
