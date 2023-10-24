@@ -17,18 +17,22 @@ final class PodTalkHttpClient: HttpClient {
     }
     
     func execute<Data: Decodable>(
-        url: URL,
+        request: PodtalkHttpRequest,
         expecting type: Data.Type,
         completion: @escaping (Result<Data, Error>) -> Void
     ) {
-        let request = URLRequest(url: url)
+        guard let request = request.getURLRequest() else {
+//                TODO: send proper message
+            completion(.failure(APIError(statusCode: nil, message: "Failed to request")))
+            return
+        }
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
                 let response = response as? HTTPURLResponse
                 let responseCode = response?.statusCode
-                var message = "Something went wrong Please try again later"
+                let message = "Something went wrong Please try again later"
 //                TODO: extract error response
-                completion(.failure(APIError(statusCode: response?.statusCode, message: message)))
+                completion(.failure(APIError(statusCode: responseCode, message: message)))
                 return
             }
             
