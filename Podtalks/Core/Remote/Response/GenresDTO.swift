@@ -7,12 +7,18 @@
 
 import Foundation
 
-struct GenresDTO {
+struct GenresDTO: Decodable {
     let genres: [GenreDTO]
 }
 
-struct GenreDTO {
+struct GenreDTO: Decodable {
     let id: Int
-    let name: Int
+    let name: String
     let parentId: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case parentId = "parent_id"
+        case id
+        case name
+    }
 }
