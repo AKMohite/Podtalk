@@ -34,4 +34,22 @@ final class PodtalkHttpRequestTest: XCTestCase {
         XCTAssertEqual(sut?.query?.contains("genre_id="), true, "genre_id query param")
     }
     
+    func test_curated_podcasts_endpointURL() {
+        let queryParams: [String : String] = ["page" : "1"]
+        let sut = PodtalkHttpRequest(endpoint: .curated_podcasts, queryParameters: queryParams).getURLRequest()?.url
+        
+        XCTAssertEqual(sut?.scheme, "https", "scheme")
+        XCTAssertEqual(sut?.host, "listen-api-test.listennotes.com", "host") // TODO: do we need to pass url in tests too?
+        XCTAssertEqual(sut?.path, "/api/v2/curated_podcasts", "path")
+        XCTAssertEqual(sut?.query?.contains("page=1"), true, "page query param")
+    }
+    
+    func test_podcast_detail_endpointURL() {
+        let sut = PodtalkHttpRequest(endpoint: .podcasts, pathSegments: ["pod_id_passed"]).getURLRequest()?.url
+        
+        XCTAssertEqual(sut?.scheme, "https", "scheme")
+        XCTAssertEqual(sut?.host, "listen-api-test.listennotes.com", "host") // TODO: do we need to pass url in tests too?
+        XCTAssertEqual(sut?.path, "/api/v2/podcasts/pod_id_passed", "path")
+    }
+    
 }
