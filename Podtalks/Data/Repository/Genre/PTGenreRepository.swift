@@ -21,7 +21,7 @@ final class PTGenreRepository: GenreRepository {
                 let genres = data.genres.compactMap { genre in
                     TalkGenre(id: genre.id, name: genre.name)
                 }
-//                TODO: save in local DN
+//                TODO: save in local DB
                 completion(genres)
                 return
             case .failure(let error):
