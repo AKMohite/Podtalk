@@ -8,5 +8,5 @@
 import Foundation
 
 protocol HttpClient {
-    func execute<Data>(url: URL, completion: @escaping (Result<Data, Error>) -> Void) -> Void
+    func execute<Data: Decodable>(url: URL, expecting type: Data.Type, completion: @escaping (Result<Data, Error>) -> Void) -> Void
 }
