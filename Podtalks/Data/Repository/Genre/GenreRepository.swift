@@ -8,6 +8,7 @@
 import Foundation
 
 protocol GenreRepository {
-    func getAll(completion: @escaping ([TalkGenre]) -> Void)
+    func getAll(completion: @escaping (Result<[TalkGenre], Error>) -> Void)
+    func getAll() async throws -> [TalkGenre]
     func getGenre(by ids: [String]) -> [TalkGenre]
 }

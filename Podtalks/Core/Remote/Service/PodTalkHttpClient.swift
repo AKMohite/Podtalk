@@ -55,7 +55,7 @@ final class PodTalkHttpClient: HttpClient {
             throw APIError(statusCode: nil, message: "Request not formed")
         }
         let (data, response) = try await URLSession.shared.data(for: request)
-        guard data == nil else {
+        guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
             let code = (response as? HTTPURLResponse)?.statusCode
             throw APIError(statusCode: code, message: "Something went wrong")
         }

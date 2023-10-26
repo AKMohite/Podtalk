@@ -8,5 +8,14 @@
 import Foundation
 
 protocol HttpClient {
-    func execute<Data: Decodable>(request: PodtalkHttpRequest, expecting type: Data.Type, completion: @escaping (Result<Data, Error>) -> Void) -> Void
+    func execute<Data: Decodable>(
+        request: PodtalkHttpRequest,
+        expecting type: Data.Type,
+        completion: @escaping (Result<Data, Error>) -> Void
+    ) -> Void
+    
+    func execute<Data: Decodable>(
+        request: PodtalkHttpRequest,
+        expecting type: Data.Type
+    ) async throws -> Data
 }
