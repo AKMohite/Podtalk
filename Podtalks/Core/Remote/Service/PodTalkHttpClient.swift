@@ -47,5 +47,20 @@ final class PodTalkHttpClient: HttpClient {
         task.resume()
     }
     
+    func execute<Data: Decodable>(
+        request: PodtalkHttpRequest,
+        expecting type: Data.Type
+    ) async throws -> Data {
+        guard let request = request.getURLRequest() else {
+            throw APIError(statusCode: nil, message: "Request not formed")
+        }
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard data == nil else {
+            let code = (response as? HTTPURLResponse)?.statusCode
+            throw APIError(statusCode: code, message: "Something went wrong")
+        }
+        return try JSONDecoder().decode(type.self, from: data)
+    }
+    
     
 }
