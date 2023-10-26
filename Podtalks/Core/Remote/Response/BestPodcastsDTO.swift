@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct BestPodcastsDTO {
+struct BestPodcastsDTO: Decodable {
     let id: Int
     let name: String?
     let total: Int

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PodcastDTO {
+struct PodcastDTO: Decodable {
     let id: String
     let type: PodcastType
     let image: String
@@ -27,7 +27,7 @@ struct PodcastDTO {
 }
 
 
-enum PodcastType {
+enum PodcastType: Decodable {
     case episodic
     case series
 }

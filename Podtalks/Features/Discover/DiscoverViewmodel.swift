@@ -15,15 +15,22 @@ protocol DiscoverViewmodelDelegate: AnyObject {
 final class DiscoverViewmodel {
     
     private let genresRepo: GenreRepository
+    private let podcastsRepo: PodcastRepository
     
-    init(genresRepo: GenreRepository = PTGenreRepository()) {
+    init(
+        genresRepo: GenreRepository = PTGenreRepository(),
+        podcastsRepo: PodcastRepository = PTPodcastRepository()
+    ) {
         self.genresRepo = genresRepo
+        self.podcastsRepo = podcastsRepo
     }
     
     weak var delegate: DiscoverViewmodelDelegate?
     
     private var genres: [TalkGenre] = []
+    private var bestPodcasts: [PTPodcast] = []
     
+//    TODO: check for main queue
     @MainActor
     func load() {
         
@@ -40,10 +47,15 @@ final class DiscoverViewmodel {
 //                break
 //            }
 //        }
+//        TODO: check for background queue
         Task {
             do {
                 self.genres = try await genresRepo.getAll()
-                self.delegate?.updateUI(for: DiscoverUI(genres: genres))
+                self.bestPodcasts = try await podcastsRepo.getBestPodcasts()
+//                async let bestPodcasts = podcastsRepo.getBestPodcasts()
+//                async let curatedList = podcastsRepo.getCuratedPodcasts()
+//                let (podcasts, curatedPodcasts) = try await (bestPodcasts, curatedList)
+                self.delegate?.updateUI(for: DiscoverUI(genres: genres, bestPodcasts: bestPodcasts))
             } catch {
                 self.delegate?.showError(with: error.localizedDescription)
             }
@@ -54,4 +66,5 @@ final class DiscoverViewmodel {
 
 internal struct DiscoverUI {
     let genres: [TalkGenre]
+    let bestPodcasts: [PTPodcast]
 }
