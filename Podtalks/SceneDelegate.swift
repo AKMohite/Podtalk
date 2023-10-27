@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+class SceneDelegate: UIResponder, UIWindowSceneDelegate, DiscoverViewmodelDelegate {
 
     var window: UIWindow?
 
@@ -17,13 +17,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
-        let httpClient = PodTalkHttpClient()
-        let repository: GenreRepository = PTGenreRepository(apiClient: httpClient)
-        repository.getAll { genres in
-            DispatchQueue.main.async {
-                print(genres)
-            }
-        }
+        let viewmodel = DiscoverViewmodel()
+        viewmodel.delegate = self
+        viewmodel.load()
+    }
+    
+    func updateUI(for model: DiscoverUI) {
+        print(model.genres)
+    }
+    
+    func showError(with message: String?) {
+        print(message)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
