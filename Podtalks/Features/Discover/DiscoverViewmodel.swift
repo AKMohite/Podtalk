@@ -29,6 +29,7 @@ final class DiscoverViewmodel {
     
     private var genres: [TalkGenre] = []
     private var bestPodcasts: [PTPodcast] = []
+    private var curatedPodcasts: [CuratedPodcast] = []
     
 //    TODO: check for main queue
     @MainActor
@@ -49,11 +50,14 @@ final class DiscoverViewmodel {
         Task {
             do {
                 self.genres = try await genresRepo.getAll()
-                self.bestPodcasts = try await podcastsRepo.getBestPodcasts()
-//                async let bestPodcasts = podcastsRepo.getBestPodcasts()
-//                async let curatedList = podcastsRepo.getCuratedPodcasts()
-//                let (podcasts, curatedPodcasts) = try await (bestPodcasts, curatedList)
-                self.delegate?.updateUI(for: DiscoverUI(genres: genres, bestPodcasts: bestPodcasts))
+//                self.bestPodcasts = try await podcastsRepo.getBestPodcasts()
+//                let curatedList = try await podcastsRepo.getCuratedPodcasts()
+                async let bestPodcasts = podcastsRepo.getBestPodcasts()
+                async let curatedList = podcastsRepo.getCuratedPodcasts()
+                let (podcasts, curatedPodcasts) = try await (bestPodcasts, curatedList)
+                self.bestPodcasts = podcasts
+                self.curatedPodcasts = curatedPodcasts
+                self.delegate?.updateUI(for: DiscoverUI(genres: genres, bestPodcasts: podcasts, curatedList: curatedPodcasts))
             } catch {
                 self.delegate?.showError(with: error.localizedDescription)
             }
@@ -65,4 +69,5 @@ final class DiscoverViewmodel {
 internal struct DiscoverUI {
     let genres: [TalkGenre]
     let bestPodcasts: [PTPodcast]
+    let curatedList: [CuratedPodcast]
 }

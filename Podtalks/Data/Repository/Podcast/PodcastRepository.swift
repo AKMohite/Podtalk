@@ -9,4 +9,5 @@ import Foundation
 
 protocol PodcastRepository {
     func getBestPodcasts() async throws -> [PTPodcast]
+    func getCuratedPodcasts() async throws -> [CuratedPodcast]
 }
