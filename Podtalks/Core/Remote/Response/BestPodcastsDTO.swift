@@ -11,10 +11,10 @@ struct BestPodcastsDTO: Decodable {
     let id: Int
     let name: String?
     let total: Int
-    let hasNext: Bool
-    let pageNumber: Int
-    let hasPrevious: Bool
-    let nextPageNumber: Int?
-    let previousPageNumber: Int?
+    let has_next: Bool
+    let page_number: Int
+    let has_previous: Bool
+    let next_page_number: Int?
+    let previous_page_number: Int?
     let podcasts: [PodcastDTO]
 }

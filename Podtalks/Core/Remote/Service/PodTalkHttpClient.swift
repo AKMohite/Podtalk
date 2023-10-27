@@ -59,7 +59,9 @@ final class PodTalkHttpClient: HttpClient {
             let code = (response as? HTTPURLResponse)?.statusCode
             throw APIError(statusCode: code, message: "Something went wrong")
         }
-        return try JSONDecoder().decode(type.self, from: data)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+        return try decoder.decode(type.self, from: data)
     }
     
     

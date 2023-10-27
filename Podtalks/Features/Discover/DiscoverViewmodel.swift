@@ -33,8 +33,6 @@ final class DiscoverViewmodel {
 //    TODO: check for main queue
     @MainActor
     func load() {
-        
-        var errors: [Error] = []
 //        genresRepo.getAll { [weak self] result in
 //            switch result {
 //            case .success(let genres):
