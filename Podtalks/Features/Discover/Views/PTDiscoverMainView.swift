@@ -15,7 +15,7 @@ class PTDiscoverMainView: UIView {
         spinner.hidesWhenStopped = true
         return spinner
     }()
-    private var collectionView: UICollectionView?
+    var collectionView: UICollectionView?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -49,11 +49,18 @@ class PTDiscoverMainView: UIView {
             collectionView.rightAnchor.constraint(equalTo: rightAnchor),
             collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+        
+        collectionView.delegate = self
+        collectionView.dataSource = self
     }
-    
+}
+
+// MARK: Setup collection section skeleton
+extension PTDiscoverMainView {
     private func createCollectionView() -> UICollectionView {
         let layout = createComposationalLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         return collectionView
     }
@@ -66,7 +73,41 @@ class PTDiscoverMainView: UIView {
     }
     
     private func createSection(for index: Int) -> NSCollectionLayoutSection {
-//        let group =
-//        return NSCollectionLayoutSection(group: group)
+        let item = NSCollectionLayoutItem(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .fractionalHeight(1.0)
+            )
+        )
+        item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0)
+        let group = NSCollectionLayoutGroup.vertical(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .absolute(150)
+            ),
+            subitems: [item]
+        )
+        let section = NSCollectionLayoutSection(group: group)
+        return section
     }
+}
+
+// MARK: - Collection delegate
+extension PTDiscoverMainView: UICollectionViewDelegate {
+    
+}
+
+// MARK: - Collection data source
+extension PTDiscoverMainView: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 20
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
+        cell.backgroundColor = .systemMint
+        return cell
+    }
+    
+    
 }

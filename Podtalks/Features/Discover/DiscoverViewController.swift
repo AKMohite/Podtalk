@@ -9,6 +9,7 @@ import UIKit
 
 final class DiscoverViewController: UIViewController {
     
+    private let viewModel = DiscoverViewmodel()
     private let mainView = PTDiscoverMainView()
 
     override func viewDidLoad() {
@@ -17,6 +18,7 @@ final class DiscoverViewController: UIViewController {
         title = "Discover"
         view.addSubview(mainView)
         addConstraints()
+//        viewModel.load()
     }
     
     private func addConstraints() {
