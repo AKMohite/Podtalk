@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SceneDelegate: UIResponder, UIWindowSceneDelegate, DiscoverViewmodelDelegate {
+class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
@@ -17,17 +17,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, DiscoverViewmodelDelega
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
-        let viewmodel = DiscoverViewmodel()
-        viewmodel.delegate = self
-        viewmodel.load()
-    }
-    
-    func updateUI(for model: DiscoverUI) {
-        print(model.genres)
-    }
-    
-    func showError(with message: String?) {
-        print(message)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
