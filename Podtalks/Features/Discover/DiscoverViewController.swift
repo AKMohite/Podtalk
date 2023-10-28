@@ -8,11 +8,24 @@
 import UIKit
 
 final class DiscoverViewController: UIViewController {
+    
+    private let mainView = PTDiscoverMainView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         title = "Discover"
+        view.addSubview(mainView)
+        addConstraints()
+    }
+    
+    private func addConstraints() {
+        NSLayoutConstraint.activate([
+            mainView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            mainView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
+            mainView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
+            mainView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
     }
 
 }
