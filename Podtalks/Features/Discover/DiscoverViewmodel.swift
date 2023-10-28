@@ -8,7 +8,7 @@
 import Foundation
 
 protocol DiscoverViewmodelDelegate: AnyObject {
-    func updateUI(for model: DiscoverUI)
+    func updateUI(for model: [DiscoverUISection])
     func showError(with message: String?)
 }
 
@@ -30,6 +30,7 @@ final class DiscoverViewmodel {
     private var genres: [TalkGenre] = []
     private var bestPodcasts: [PTPodcast] = []
     private var curatedPodcasts: [CuratedPodcast] = []
+    private(set) var sections: [DiscoverUISection] = []
     
 //    TODO: check for main queue
     @MainActor
@@ -60,7 +61,13 @@ final class DiscoverViewmodel {
                 self.curatedPodcasts = curatedPodcasts
                 let topBanners = Array(podcasts.prefix(4))
                 let bestList = Array(podcasts.dropFirst(4))
-                self.delegate?.updateUI(for: DiscoverUI(genres: genres, topBanners: topBanners, bestPodcasts: bestList, recentAddedPodcasts: newAddedPodcast, curatedList: curatedPodcasts))
+                self.sections = [
+                    .topBanners(topBanners),
+                    .bestPodcasts(bestList),
+                    .recentAddedPodcasts(newAddedPodcast),
+                    .curatedList(curatedPodcasts)
+                ]
+                self.delegate?.updateUI(for: sections)
             } catch {
                 self.delegate?.showError(with: error.localizedDescription)
             }
@@ -69,10 +76,19 @@ final class DiscoverViewmodel {
     
 }
 
-internal struct DiscoverUI {
-    let genres: [TalkGenre]
-    let topBanners: [PTPodcast]
-    let bestPodcasts: [PTPodcast]
-    let recentAddedPodcasts: [PTPodcast]
-    let curatedList: [CuratedPodcast]
+internal enum DiscoverUISection {
+//    case genres: [TalkGenre]
+    case topBanners([PTPodcast])
+    case bestPodcasts([PTPodcast])
+    case recentAddedPodcasts([PTPodcast])
+    case curatedList([CuratedPodcast])
+    
+    var title: String {
+        switch self {
+            case .topBanners: return ""
+            case .bestPodcasts: return "Best podcasts"
+            case .recentAddedPodcasts: return "Recently added"
+            case .curatedList: return "Curated list"
+        }
+    }
 }
