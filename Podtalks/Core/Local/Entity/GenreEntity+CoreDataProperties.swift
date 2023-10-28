@@ -19,6 +19,7 @@ extension GenreEntity {
     @NSManaged public var id: Int16
     @NSManaged public var name: String
     @NSManaged public var parent_id: Int16
+    @NSManaged public var created_at: Date
 
 }
 

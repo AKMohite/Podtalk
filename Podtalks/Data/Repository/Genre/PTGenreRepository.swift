@@ -45,11 +45,17 @@ final class PTGenreRepository: GenreRepository {
     
     func getAll() async throws -> [TalkGenre] {
         let localGenres = try await genresDAO.getAll()
-        if localGenres.isEmpty {
+        if !localGenres.isEmpty {
+            let date: Date = localGenres.first!.created_at
+            if validate(date, against: .now) {
+                return localGenres.map { genre in
+                    TalkGenre(id: Int(genre.id), name: genre.name)
+                }
+            } else {
+                return try await fetchGenresFromRemote()
+            }
+        } else {
             return try await fetchGenresFromRemote()
-        }
-        return localGenres.map { genre in
-            TalkGenre(id: Int(genre.id), name: genre.name)
         }
     }
     
@@ -61,6 +67,13 @@ final class PTGenreRepository: GenreRepository {
             TalkGenre(id: Int(genre.id), name: genre.name)
         }
         return models
+    }
+    
+    private func validate(_ timestamp: Date, against date: Date) -> Bool {
+        guard let maxCacheAge = Calendar(identifier: .gregorian).date(byAdding: .day, value: 1, to: timestamp) else {
+            return false
+        }
+        return date < maxCacheAge
     }
     
     

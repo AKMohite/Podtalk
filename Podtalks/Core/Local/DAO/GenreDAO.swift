@@ -28,6 +28,7 @@ final class PTGenreDAO: GenreDAO {
                 localGenre.id = Int16(genre.id)
                 localGenre.name = genre.name
                 localGenre.parent_id = Int16(genre.parentId)
+                localGenre.created_at = .now
             }
             if (privateManagedContext.hasChanges) {
                 try? privateManagedContext.save()
@@ -41,6 +42,7 @@ final class PTGenreDAO: GenreDAO {
         entity.id = Int16(dto.id)
         entity.name = dto.name
         entity.parent_id = Int16(dto.parentId)
+        entity.created_at = .now
         PersistentStorage.shared.saveContext()
     }
     
