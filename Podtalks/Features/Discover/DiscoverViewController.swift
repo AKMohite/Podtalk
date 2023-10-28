@@ -7,10 +7,12 @@
 
 import UIKit
 
-class DiscoverViewController: UIViewController, DiscoverViewmodelDelegate {
+final class DiscoverViewController: UIViewController, DiscoverViewmodelDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .systemBackground
+        title = "Discover"
         
         let viewmodel = DiscoverViewmodel()
         viewmodel.delegate = self
