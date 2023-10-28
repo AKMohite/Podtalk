@@ -53,13 +53,14 @@ final class DiscoverViewmodel {
 //                self.bestPodcasts = try await podcastsRepo.getBestPodcasts()
 //                let curatedList = try await podcastsRepo.getCuratedPodcasts()
                 async let bestPodcasts = podcastsRepo.getBestPodcasts()
+                async let recentAddedPodcast = podcastsRepo.getRecentAddedPodcasts()
                 async let curatedList = podcastsRepo.getCuratedPodcasts()
-                let (podcasts, curatedPodcasts) = try await (bestPodcasts, curatedList)
+                let (podcasts, curatedPodcasts, newAddedPodcast) = try await (bestPodcasts, curatedList, recentAddedPodcast)
                 self.bestPodcasts = podcasts
                 self.curatedPodcasts = curatedPodcasts
                 let topBanners = Array(podcasts.prefix(4))
                 let bestList = Array(podcasts.dropFirst(4))
-                self.delegate?.updateUI(for: DiscoverUI(genres: genres, topBanners: topBanners, bestPodcasts: bestList, curatedList: curatedPodcasts))
+                self.delegate?.updateUI(for: DiscoverUI(genres: genres, topBanners: topBanners, bestPodcasts: bestList, recentAddedPodcasts: newAddedPodcast, curatedList: curatedPodcasts))
             } catch {
                 self.delegate?.showError(with: error.localizedDescription)
             }
@@ -72,5 +73,6 @@ internal struct DiscoverUI {
     let genres: [TalkGenre]
     let topBanners: [PTPodcast]
     let bestPodcasts: [PTPodcast]
+    let recentAddedPodcasts: [PTPodcast]
     let curatedList: [CuratedPodcast]
 }

@@ -15,13 +15,22 @@ final class PTPodcastRepository: PodcastRepository {
         self.api = api
     }
     
-    func getBestPodcasts() async throws -> [PTPodcast] {
-        let paramters = ["sort" : "listen_score"]
+    fileprivate func getPodcasts(with paramters: [String : String]) async throws -> [PTPodcast] {
         let dto = try await api.execute(request: .init(endpoint: .best_podcasts, queryParameters: paramters), expecting: BestPodcastsDTO.self)
         let podcasts = dto.podcasts.compactMap { podcast in
             PTPodcast(id: podcast.id, name: podcast.title, description: podcast.description ?? "NA", image: URL(string: podcast.image))
         }
         return podcasts
+    }
+    
+    func getBestPodcasts() async throws -> [PTPodcast] {
+        let paramters = ["sort" : "listen_score"]
+        return try await getPodcasts(with: paramters)
+    }
+    
+    func getRecentAddedPodcasts() async throws -> [PTPodcast] {
+        let paramters = ["sort" : "recent_added_first"]
+        return try await getPodcasts(with: paramters)
     }
     
     func getCuratedPodcasts() async throws -> [CuratedPodcast] {
