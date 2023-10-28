@@ -25,16 +25,28 @@ final class PersistentStorage {
         }()
         
     lazy var context = persistentContainer.viewContext
-        // MARK: - Core Data Saving support
-        
-        func saveContext () {
-            if context.hasChanges {
-                do {
-                    try context.save()
-                } catch {
-                    let nserror = error as NSError
-                    fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-                }
+    // MARK: - Core Data Saving support
+    
+    func saveContext () {
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch {
+                let nserror = error as NSError
+                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
+    }
+    
+    func fetchManagedObject<T: NSManagedObject>(managedObject: T.Type) -> [T] {
+        do {
+            guard let result = try PersistentStorage.shared.context.fetch(managedObject.fetchRequest()) as? [T] else {
+                return []
+            }
+            return result
+        } catch {
+            debugPrint(error)
+        }
+        return []
+    }
 }

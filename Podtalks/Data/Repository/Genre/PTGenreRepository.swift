@@ -9,9 +9,11 @@ import Foundation
 
 final class PTGenreRepository: GenreRepository {
     private let apiClient: HttpClient
+    private let genresDAO: GenreDAO
     
-    init(apiClient: HttpClient = PodTalkHttpClient.shared) {
+    init(apiClient: HttpClient = PodTalkHttpClient.shared, genresDAO: GenreDAO = PTGenreDAO()) {
         self.apiClient = apiClient
+        self.genresDAO = genresDAO
     }
     
     func getAll(completion: @escaping (Result<[TalkGenre], Error>) -> Void) {
@@ -34,12 +36,7 @@ final class PTGenreRepository: GenreRepository {
     
     fileprivate func fetchGenresFromRemote() async throws -> [TalkGenre] {
         let dto = try await apiClient.execute(request: PodtalkHttpRequest(endpoint: .genres), expecting: GenresDTO.self)
-        //        let entity = GenreEntity(context: PersistentStorage.shared.context)
-        //        let dataGenre = dto.genres[0]
-        //        entity.id = Int16(dataGenre.id)
-        //        entity.name = dataGenre.name
-        //        entity.parent_id = Int16(dataGenre.parentId)
-        //        PersistentStorage.shared.saveContext()
+        _ = try await genresDAO.addAll(dto: dto.genres)
         let genres = dto.genres.compactMap { genre in
             TalkGenre(id: genre.id, name: genre.name)
         }
@@ -47,9 +44,7 @@ final class PTGenreRepository: GenreRepository {
     }
     
     func getAll() async throws -> [TalkGenre] {
-        guard let localGenres = try? PersistentStorage.shared.context.fetch(GenreEntity.fetchRequest()) as? [GenreEntity] else {
-            return try await fetchGenresFromRemote()
-        }
+        let localGenres = try await genresDAO.getAll()
         if localGenres.isEmpty {
             return try await fetchGenresFromRemote()
         }
@@ -58,8 +53,14 @@ final class PTGenreRepository: GenreRepository {
         }
     }
     
-    func getGenre(by ids: [String]) -> [TalkGenre] {
-        return []
+    func getGenre(by ids: [String]) async throws -> [TalkGenre] {
+        guard let result = try? await genresDAO.get(by: ids) else {
+            return []
+        }
+        let models = result.map { genre in
+            TalkGenre(id: Int(genre.id), name: genre.name)
+        }
+        return models
     }
     
     
