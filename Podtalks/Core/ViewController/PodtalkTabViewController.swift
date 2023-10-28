@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, DiscoverViewmodelDelegate {
+class PodtalkTabViewController: UITabBarController, DiscoverViewmodelDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -15,7 +15,7 @@ class ViewController: UIViewController, DiscoverViewmodelDelegate {
         
         let viewmodel = DiscoverViewmodel()
         viewmodel.delegate = self
-        viewmodel.load()
+//        viewmodel.load()
     }
     
     func updateUI(for model: DiscoverUI) {
