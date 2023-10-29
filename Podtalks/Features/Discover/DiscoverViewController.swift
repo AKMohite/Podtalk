@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class DiscoverViewController: UIViewController {
+final class DiscoverViewController: UIViewController, DiscoverViewmodelDelegate {
     
     private let viewModel = DiscoverViewmodel()
     private let mainView = PTDiscoverMainView()
@@ -18,7 +18,16 @@ final class DiscoverViewController: UIViewController {
         title = "Discover"
         view.addSubview(mainView)
         addConstraints()
-//        viewModel.load()
+        viewModel.delegate = self
+        viewModel.load()
+    }
+    
+    func updateUI(for model: [DiscoverUISection]) {
+        mainView.reloadData(for: model)
+    }
+    
+    func showError(with message: String?) {
+        
     }
     
     private func addConstraints() {

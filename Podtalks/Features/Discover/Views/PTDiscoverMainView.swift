@@ -15,12 +15,13 @@ class PTDiscoverMainView: UIView {
         spinner.hidesWhenStopped = true
         return spinner
     }()
-    var collectionView: UICollectionView?
+    private var collectionView: UICollectionView?
+    private var sections: [DiscoverUISection] = []
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
-        backgroundColor = .systemPink
+        backgroundColor = .systemBackground
         
         let collectionView = createCollectionView()
         self.collectionView = collectionView
@@ -32,6 +33,11 @@ class PTDiscoverMainView: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("Not loaded by: PTDiscoverMainView")
+    }
+    
+    func reloadData(for sections: [DiscoverUISection]) {
+        self.sections = sections
+        collectionView?.reloadData()
     }
     
     private func addConstraints() {
@@ -73,6 +79,103 @@ extension PTDiscoverMainView {
     }
     
     private func createSection(for index: Int) -> NSCollectionLayoutSection {
+        switch sections[index] {
+        case .topBanners: return createTopBannerLayout()
+        case .bestPodcasts: return createBestPodcastsLayout()
+        case .recentAddedPodcasts: return createRecentAddedPodcastLayout()
+        case .curatedList: return createCuratedListLayout()
+        }
+    }
+}
+
+// MARK: - Discover section layout
+extension PTDiscoverMainView {
+    private func createTopBannerLayout() -> NSCollectionLayoutSection {
+        let item = NSCollectionLayoutItem(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .fractionalHeight(1.0)
+            )
+        )
+        item.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 16, bottom: 10, trailing: 16)
+        let group = NSCollectionLayoutGroup.horizontal(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .absolute(200)
+            ),
+            subitems: [item]
+        )
+        let section = NSCollectionLayoutSection(group: group)
+        section.visibleItemsInvalidationHandler = { (items, offset, environment) in
+             items.forEach { item in
+             let distanceFromCenter = abs((item.frame.midX - offset.x) - environment.container.contentSize.width / 2.0)
+             let minScale: CGFloat = 0.8
+             let maxScale: CGFloat = 1.0
+             let scale = max(maxScale - (distanceFromCenter / environment.container.contentSize.width), minScale)
+             item.transform = CGAffineTransform(scaleX: scale, y: scale)
+             }
+        }
+        section.orthogonalScrollingBehavior = .paging
+        return section
+    }
+    
+    private func createBestPodcastsLayout() -> NSCollectionLayoutSection {
+        let item = NSCollectionLayoutItem(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .fractionalHeight(1.0)
+            )
+        )
+        item.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 2, bottom: 4, trailing: 2)
+        let verticalGroup = NSCollectionLayoutGroup.vertical(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .absolute(300)
+            ),
+            subitem: item,
+            count: 4
+        )
+        let horizontalGroup = NSCollectionLayoutGroup.horizontal(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(0.9),
+                heightDimension: .absolute(300)
+            ),
+            subitem: verticalGroup,
+            count: 1
+        )
+        let section = NSCollectionLayoutSection(group: horizontalGroup)
+        section.orthogonalScrollingBehavior = .groupPaging
+        return section
+    }
+    
+    private func createRecentAddedPodcastLayout() -> NSCollectionLayoutSection {
+        let item = NSCollectionLayoutItem(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .fractionalHeight(1.0)
+            )
+        )
+        item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 2, bottom: 2, trailing: 2)
+        let verticalGroup = NSCollectionLayoutGroup.vertical(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .absolute(300)
+            ),
+            subitems: [item, item, item, item]
+        )
+        let horizontalGroup = NSCollectionLayoutGroup.horizontal(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(0.9),
+                heightDimension: .absolute(300)
+            ),
+            subitems: [verticalGroup]
+        )
+        let section = NSCollectionLayoutSection(group: horizontalGroup)
+        section.orthogonalScrollingBehavior = .groupPaging
+        return section
+    }
+    
+    private func createCuratedListLayout() -> NSCollectionLayoutSection {
         let item = NSCollectionLayoutItem(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
@@ -80,14 +183,14 @@ extension PTDiscoverMainView {
             )
         )
         item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0)
-        let group = NSCollectionLayoutGroup.vertical(
+        let verticalGroup = NSCollectionLayoutGroup.vertical(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
                 heightDimension: .absolute(150)
             ),
             subitems: [item]
         )
-        let section = NSCollectionLayoutSection(group: group)
+        let section = NSCollectionLayoutSection(group: verticalGroup)
         return section
     }
 }
@@ -99,13 +202,36 @@ extension PTDiscoverMainView: UICollectionViewDelegate {
 
 // MARK: - Collection data source
 extension PTDiscoverMainView: UICollectionViewDataSource {
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return sections.count
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 20
+        switch sections[section] {
+            case .topBanners(let banners): return banners.count
+            case .bestPodcasts(let podcasts): return podcasts.count
+            case .recentAddedPodcasts(let podcasts): return podcasts.count
+            case .curatedList(let curatedList): return curatedList.count
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-        cell.backgroundColor = .systemMint
+        switch sections[indexPath.section] {
+            case .topBanners:
+                cell.backgroundColor = .systemMint
+                break
+            case .bestPodcasts:
+                cell.backgroundColor = .systemRed
+                break
+            case .recentAddedPodcasts:
+                cell.backgroundColor = .systemBlue
+                break
+            case .curatedList:
+                cell.backgroundColor = .systemIndigo
+                break
+        }
         return cell
     }
     
