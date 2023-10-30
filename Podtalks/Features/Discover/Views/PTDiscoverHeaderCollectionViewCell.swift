@@ -11,6 +11,10 @@ class PTDiscoverHeaderCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "PTDiscoverHeaderCollectionViewCell"
     
+    var onReuse: () -> Void = {}
+    
+    private var loader: PTImageLoader?
+    private var imageTaskId: UUID?
     private let podcastImg: UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
@@ -31,14 +35,16 @@ class PTDiscoverHeaderCollectionViewCell: UICollectionViewCell {
     private let publishedBy: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 1
-        label.font = .systemFont(ofSize: 16, weight: .light)
+        label.numberOfLines = 2
+        label.font = .systemFont(ofSize: 16, weight: .thin)
         return label
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.backgroundColor = .tertiarySystemBackground
+        contentView.layer.masksToBounds = true
+        contentView.layer.cornerRadius = 8
         contentView.addSubview(podcastImg)
         contentView.addSubview(podcastName)
         contentView.addSubview(publishedBy)
@@ -52,8 +58,8 @@ class PTDiscoverHeaderCollectionViewCell: UICollectionViewCell {
     private func addConstraints() {
         NSLayoutConstraint.activate([
             podcastImg.widthAnchor.constraint(equalToConstant: 100),
-            podcastImg.topAnchor.constraint(equalTo: contentView.topAnchor),
-            podcastImg.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            podcastImg.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            podcastImg.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
             podcastImg.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 8),
             
 //            podcastName.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
@@ -68,9 +74,33 @@ class PTDiscoverHeaderCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    func configure(with podcast: PTPodcast) {
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        onReuse()
+        podcastImg.image = nil
+        if let id = imageTaskId {
+            loader?.cancelLoad(id)
+        }
+        imageTaskId = nil
+        podcastName.text = nil
+        publishedBy.text = nil
+    }
+    
+    func configure(with podcast: PTPodcast, loader: PTImageLoader) {
+        self.loader = loader
         podcastName.text = podcast.name
         publishedBy.text = podcast.publishedBy ?? "NA"
+        imageTaskId = loader.loadImage(podcast.image) { [weak self] result in
+            switch result {
+                case .success(let data):
+                    DispatchQueue.main.async {
+                        self?.podcastImg.image = data
+                    }
+                case .failure:
+                    break
+                
+            }
+        }
     }
     
 }

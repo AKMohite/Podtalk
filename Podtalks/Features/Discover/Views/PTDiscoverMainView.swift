@@ -9,6 +9,7 @@ import UIKit
 
 class PTDiscoverMainView: UIView {
     
+    private let imageLoader = PTImageLoader()
     private let loader: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView(style: .large)
         spinner.translatesAutoresizingMaskIntoConstraints = false
@@ -256,7 +257,7 @@ extension PTDiscoverMainView: UICollectionViewDataSource {
                     fatalError("Cannot create cell for: \(section)")
                 }
                 let podcast = podcasts[indexPath.row]
-                cell.configure(with: podcast)
+                cell.configure(with: podcast, loader: imageLoader)
                 return cell
             case .bestPodcasts:
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
