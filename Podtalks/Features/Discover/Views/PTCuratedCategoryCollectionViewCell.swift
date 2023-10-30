@@ -15,7 +15,8 @@ class PTCuratedCategoryCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 2
-        label.font = .systemFont(ofSize: 12, weight: .bold)
+        label.backgroundColor = .red
+        label.font = .systemFont(ofSize: 14, weight: .bold)
         return label
     }()
     private let viewAll: UIButton = {
@@ -23,14 +24,16 @@ class PTCuratedCategoryCollectionViewCell: UICollectionViewCell {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("View all", for: .normal)
         button.isHidden = true
+        button.backgroundColor = .purple
         return button
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        contentView.backgroundColor = .tertiarySystemBackground
+        backgroundColor = .blue
         contentView.addSubview(categoryName)
         contentView.addSubview(viewAll)
+        addConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -44,8 +47,7 @@ class PTCuratedCategoryCollectionViewCell: UICollectionViewCell {
             categoryName.rightAnchor.constraint(equalTo: viewAll.leftAnchor, constant: -4),
             
             viewAll.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
-            viewAll.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -4),
-            viewAll.leftAnchor.constraint(equalTo: categoryName.rightAnchor, constant: 4),
+            viewAll.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -4)
         ])
     }
     
@@ -57,7 +59,7 @@ class PTCuratedCategoryCollectionViewCell: UICollectionViewCell {
     
     func configure(with curatedCategory: CuratedPodcast) {
         categoryName.text = curatedCategory.title
-        viewAll.isHidden = curatedCategory.canloadMore
+        viewAll.isHidden = !curatedCategory.canloadMore
     }
     
 }
