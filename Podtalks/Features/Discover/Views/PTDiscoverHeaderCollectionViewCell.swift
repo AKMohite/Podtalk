@@ -29,7 +29,7 @@ class PTDiscoverHeaderCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 2
-        label.font = .systemFont(ofSize: 18, weight: .bold)
+        label.font = .systemFont(ofSize: 20, weight: .bold)
         return label
     }()
     private let publishedBy: UILabel = {
@@ -57,7 +57,7 @@ class PTDiscoverHeaderCollectionViewCell: UICollectionViewCell {
     
     private func addConstraints() {
         NSLayoutConstraint.activate([
-            podcastImg.widthAnchor.constraint(equalToConstant: 100),
+            podcastImg.widthAnchor.constraint(equalToConstant: 150),
             podcastImg.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
             podcastImg.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
             podcastImg.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 8),

@@ -105,7 +105,7 @@ extension PTDiscoverMainView {
         let group = NSCollectionLayoutGroup.horizontal(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
-                heightDimension: .absolute(150)
+                heightDimension: .absolute(180)
             ),
             subitems: [item]
         )
