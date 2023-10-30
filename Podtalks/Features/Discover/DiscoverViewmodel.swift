@@ -35,24 +35,10 @@ final class DiscoverViewmodel {
 //    TODO: check for main queue
     @MainActor
     func load() {
-//        genresRepo.getAll { [weak self] result in
-//            switch result {
-//            case .success(let genres):
-//                self?.genres = genres
-//                self?.delegate?.updateUI(for: DiscoverUI(genres: genres))
-//                break
-//            case .failure(let error):
-//                errors.append(error)
-//                self?.delegate?.showError(with: error.localizedDescription)
-//                break
-//            }
-//        }
 //        TODO: check for background queue
         Task {
             do {
                 self.genres = try await genresRepo.getAll()
-//                self.bestPodcasts = try await podcastsRepo.getBestPodcasts()
-//                let curatedList = try await podcastsRepo.getCuratedPodcasts()
                 async let bestPodcasts = podcastsRepo.getBestPodcasts()
                 async let recentAddedPodcast = podcastsRepo.getRecentAddedPodcasts()
                 async let curatedList = podcastsRepo.getCuratedPodcasts()

@@ -72,6 +72,7 @@ extension PTDiscoverMainView {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.register(PTDiscoverHeaderCollectionViewCell.self, forCellWithReuseIdentifier: PTDiscoverHeaderCollectionViewCell.identifier)
+        collectionView.register(PTPodcastCollectionViewCell.self, forCellWithReuseIdentifier: PTPodcastCollectionViewCell.identifier)
         return collectionView
     }
     
@@ -134,7 +135,7 @@ extension PTDiscoverMainView {
         let verticalGroup = NSCollectionLayoutGroup.vertical(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
-                heightDimension: .absolute(300)
+                heightDimension: .absolute(120)
             ),
             repeatingSubitem: item,
             count: 4
@@ -144,7 +145,7 @@ extension PTDiscoverMainView {
         let horizontalGroup = NSCollectionLayoutGroup.horizontal(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(0.9),
-                heightDimension: .absolute(300)
+                heightDimension: .absolute(480)
             ),
             repeatingSubitem: verticalGroup,
             count: 1
@@ -155,30 +156,7 @@ extension PTDiscoverMainView {
     }
     
     private func createRecentAddedPodcastLayout() -> NSCollectionLayoutSection {
-        let item = NSCollectionLayoutItem(
-            layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .fractionalHeight(1.0)
-            )
-        )
-        item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 2, bottom: 2, trailing: 2)
-        let verticalGroup = NSCollectionLayoutGroup.vertical(
-            layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .absolute(300)
-            ),
-            subitems: [item, item, item, item]
-        )
-        let horizontalGroup = NSCollectionLayoutGroup.horizontal(
-            layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(0.9),
-                heightDimension: .absolute(300)
-            ),
-            subitems: [verticalGroup]
-        )
-        let section = NSCollectionLayoutSection(group: horizontalGroup)
-        section.orthogonalScrollingBehavior = .groupPaging
-        return section
+        return createBestPodcastsLayout()
     }
     
     private func createCuratedListLayout() -> NSCollectionLayoutSection {
@@ -261,13 +239,19 @@ extension PTDiscoverMainView: UICollectionViewDataSource {
                 let podcast = podcasts[indexPath.row]
                 cell.configure(with: podcast, loader: imageLoader)
                 return cell
-            case .bestPodcasts:
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-                cell.backgroundColor = .systemRed
+            case .bestPodcasts(let podcasts):
+                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PTPodcastCollectionViewCell.identifier, for: indexPath) as? PTPodcastCollectionViewCell else {
+                    fatalError("Cannot create cell for: \(section)")
+                }
+                let podcast = podcasts[indexPath.row]
+                cell.configure(with: podcast, loader: imageLoader)
                 return cell
-            case .recentAddedPodcasts:
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-                cell.backgroundColor = .systemBlue
+            case .recentAddedPodcasts(let podcasts):
+                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PTPodcastCollectionViewCell.identifier, for: indexPath) as? PTPodcastCollectionViewCell else {
+                    fatalError("Cannot create cell for: \(section)")
+                }
+                let podcast = podcasts[indexPath.row]
+                cell.configure(with: podcast, loader: imageLoader)
                 return cell
             case .curatedList:
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
