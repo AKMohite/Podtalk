@@ -7,6 +7,7 @@
 
 import UIKit
 
+// TODO: Handle image loading properly
 // https://www.donnywals.com/efficiently-loading-images-in-table-views-and-collection-views/
 class PTImageLoader {
     private var runningRequests: [UUID: URLSessionDataTask] = [:]

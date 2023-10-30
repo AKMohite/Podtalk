@@ -18,7 +18,7 @@ final class PTPodcastRepository: PodcastRepository {
     fileprivate func getPodcasts(with paramters: [String : String]) async throws -> [PTPodcast] {
         let dto = try await api.execute(request: .init(endpoint: .best_podcasts, queryParameters: paramters), expecting: BestPodcastsDTO.self)
         let podcasts = dto.podcasts.compactMap { podcast in
-            PTPodcast(id: podcast.id, name: podcast.title, description: podcast.description ?? "NA", image: URL(string: podcast.image), publishedBy: podcast.publisher)
+            PTPodcast(id: podcast.id, name: podcast.title, description: podcast.description ?? "NA", image: URL(string: podcast.image), thumbnail: URL(string: podcast.thumbnail), publishedBy: podcast.publisher)
         }
         return podcasts
     }
@@ -37,7 +37,7 @@ final class PTPodcastRepository: PodcastRepository {
         let dto = try await api.execute(request: .init(endpoint: .curated_podcasts), expecting: CuratedPodcastsDTO.self)
         let curatedList: [CuratedPodcast] = dto.curated_lists.map { curatedPodcasts in
             let podcasts = curatedPodcasts.podcasts.map { podcast in
-                PTPodcast(id: podcast.id, name: podcast.title, description: podcast.description ?? "NA", image: URL(string: podcast.image), publishedBy: podcast.publisher)
+                PTPodcast(id: podcast.id, name: podcast.title, description: podcast.description ?? "NA", image: URL(string: podcast.image), thumbnail: URL(string: podcast.thumbnail), publishedBy: podcast.publisher)
             }
             return CuratedPodcast(id: curatedPodcasts.id, title: curatedPodcasts.title, total: curatedPodcasts.total, description: curatedPodcasts.description, podcasts: podcasts)
         }

@@ -90,7 +90,7 @@ class PTDiscoverHeaderCollectionViewCell: UICollectionViewCell {
         self.loader = loader
         podcastName.text = podcast.name
         publishedBy.text = podcast.publishedBy ?? "NA"
-        imageTaskId = loader.loadImage(podcast.image) { [weak self] result in
+        imageTaskId = loader.loadImage(podcast.thumbnail) { [weak self] result in
             switch result {
                 case .success(let data):
                     DispatchQueue.main.async {

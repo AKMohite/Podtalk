@@ -12,5 +12,6 @@ struct PTPodcast {
     let name: String
     let description: String
     let image: URL?
+    let thumbnail: URL?
     let publishedBy: String?
 }
