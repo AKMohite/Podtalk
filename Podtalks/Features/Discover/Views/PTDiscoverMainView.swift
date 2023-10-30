@@ -73,6 +73,7 @@ extension PTDiscoverMainView {
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.register(PTDiscoverHeaderCollectionViewCell.self, forCellWithReuseIdentifier: PTDiscoverHeaderCollectionViewCell.identifier)
         collectionView.register(PTPodcastCollectionViewCell.self, forCellWithReuseIdentifier: PTPodcastCollectionViewCell.identifier)
+        collectionView.register(PTCuratedCategoryCollectionViewCell.self, forCellWithReuseIdentifier: PTCuratedCategoryCollectionViewCell.identifier)
         return collectionView
     }
     
@@ -170,7 +171,7 @@ extension PTDiscoverMainView {
         let verticalGroup = NSCollectionLayoutGroup.vertical(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
-                heightDimension: .absolute(150)
+                heightDimension: .absolute(200)
             ),
             subitems: [item]
         )
@@ -253,9 +254,12 @@ extension PTDiscoverMainView: UICollectionViewDataSource {
                 let podcast = podcasts[indexPath.row]
                 cell.configure(with: podcast, loader: imageLoader)
                 return cell
-            case .curatedList:
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-                cell.backgroundColor = .systemIndigo
+            case .curatedList(let categories):
+                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PTCuratedCategoryCollectionViewCell.identifier, for: indexPath) as? PTCuratedCategoryCollectionViewCell else {
+                    fatalError("Cannot create cell for: \(section)")
+                }
+                let curatedCategory = categories[indexPath.row]
+                cell.configure(with: curatedCategory)
                 return cell
         }
     }

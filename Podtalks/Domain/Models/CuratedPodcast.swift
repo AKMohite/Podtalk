@@ -13,4 +13,8 @@ internal struct CuratedPodcast {
     let total: Int
     let description: String
     let podcasts: [PTPodcast]
+    
+    var canloadMore: Bool {
+        return total > podcasts.count
+    }
 }
