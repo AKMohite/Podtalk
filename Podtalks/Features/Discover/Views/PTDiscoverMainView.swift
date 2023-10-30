@@ -68,6 +68,7 @@ extension PTDiscoverMainView {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.register(PTDiscoverHeaderCollectionViewCell.self, forCellWithReuseIdentifier: PTDiscoverHeaderCollectionViewCell.identifier)
         return collectionView
     }
     
@@ -101,7 +102,7 @@ extension PTDiscoverMainView {
         let group = NSCollectionLayoutGroup.horizontal(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
-                heightDimension: .absolute(200)
+                heightDimension: .absolute(150)
             ),
             subitems: [item]
         )
@@ -132,15 +133,17 @@ extension PTDiscoverMainView {
                 widthDimension: .fractionalWidth(1.0),
                 heightDimension: .absolute(300)
             ),
-            subitem: item,
+            repeatingSubitem: item,
             count: 4
         )
+//        verticalGroup.interItemSpacing = .flexible(4)
+        verticalGroup.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 2, bottom: 4, trailing: 2)
         let horizontalGroup = NSCollectionLayoutGroup.horizontal(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(0.9),
                 heightDimension: .absolute(300)
             ),
-            subitem: verticalGroup,
+            repeatingSubitem: verticalGroup,
             count: 1
         )
         let section = NSCollectionLayoutSection(group: horizontalGroup)
@@ -198,6 +201,35 @@ extension PTDiscoverMainView {
 // MARK: - Collection delegate
 extension PTDiscoverMainView: UICollectionViewDelegate {
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        let section = sections[indexPath.section]
+        switch section {
+        case .topBanners(let podcasts):
+            let podcast = podcasts[indexPath.row]
+            self.gotoPodcastDetails(podcast: podcast)
+            break
+        case .bestPodcasts(let podcasts):
+            let podcast = podcasts[indexPath.row]
+            self.gotoPodcastDetails(podcast: podcast)
+            break
+        case .recentAddedPodcasts(let podcasts):
+            let podcast = podcasts[indexPath.row]
+            self.gotoPodcastDetails(podcast: podcast)
+            break
+        case .curatedList(let curatedList):
+            let curatedPodcast = curatedList[indexPath.row]
+            self.gotoCuratedPodcast(curatedPodcast: curatedPodcast)
+            break
+        }
+    }
+    
+    private func gotoPodcastDetails(podcast: PTPodcast) {
+        
+    }
+    
+    private func gotoCuratedPodcast(curatedPodcast: CuratedPodcast) {}
+    
 }
 
 // MARK: - Collection data source
@@ -217,22 +249,28 @@ extension PTDiscoverMainView: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-        switch sections[indexPath.section] {
-            case .topBanners:
-                cell.backgroundColor = .systemMint
-                break
+        let section = sections[indexPath.section]
+        switch section {
+            case .topBanners(let podcasts):
+                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PTDiscoverHeaderCollectionViewCell.identifier, for: indexPath) as? PTDiscoverHeaderCollectionViewCell else {
+                    fatalError("Cannot create cell for: \(section)")
+                }
+                let podcast = podcasts[indexPath.row]
+                cell.configure(with: podcast)
+                return cell
             case .bestPodcasts:
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
                 cell.backgroundColor = .systemRed
-                break
+                return cell
             case .recentAddedPodcasts:
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
                 cell.backgroundColor = .systemBlue
-                break
+                return cell
             case .curatedList:
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
                 cell.backgroundColor = .systemIndigo
-                break
+                return cell
         }
-        return cell
     }
     
     
