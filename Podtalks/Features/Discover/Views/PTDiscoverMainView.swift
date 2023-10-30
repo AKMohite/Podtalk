@@ -13,6 +13,7 @@ class PTDiscoverMainView: UIView {
     private let loader: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView(style: .large)
         spinner.translatesAutoresizingMaskIntoConstraints = false
+        spinner.startAnimating()
         spinner.hidesWhenStopped = true
         return spinner
     }()
@@ -38,6 +39,7 @@ class PTDiscoverMainView: UIView {
     
     func reloadData(for sections: [DiscoverUISection]) {
         self.sections = sections
+        loader.stopAnimating()
         collectionView?.reloadData()
     }
     
