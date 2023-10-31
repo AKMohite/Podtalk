@@ -70,7 +70,7 @@ extension PTDiscoverMainView {
         let layout = createComposationalLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.register(PTGenreCollectionViewCell.self, forCellWithReuseIdentifier: PTGenreCollectionViewCell.identifier)
         collectionView.register(PTDiscoverHeaderCollectionViewCell.self, forCellWithReuseIdentifier: PTDiscoverHeaderCollectionViewCell.identifier)
         collectionView.register(PTPodcastCollectionViewCell.self, forCellWithReuseIdentifier: PTPodcastCollectionViewCell.identifier)
         collectionView.register(PTCuratedCategoryCollectionViewCell.self, forCellWithReuseIdentifier: PTCuratedCategoryCollectionViewCell.identifier)
@@ -89,7 +89,8 @@ extension PTDiscoverMainView {
         case .topBanners: return createTopBannerLayout()
         case .bestPodcasts: return createBestPodcastsLayout()
         case .recentAddedPodcasts: return createRecentAddedPodcastLayout()
-        case .curatedList: return createCuratedListLayout()
+//        case .curatedList: return createCuratedListLayout()
+        case.genres: return createGenresLayout()
         }
     }
 }
@@ -178,6 +179,25 @@ extension PTDiscoverMainView {
         let section = NSCollectionLayoutSection(group: verticalGroup)
         return section
     }
+    
+    private func createGenresLayout() -> NSCollectionLayoutSection {
+        let item = NSCollectionLayoutItem(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .absolute(30)
+            )
+        )
+        item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 4, bottom: 2, trailing: 4)
+        let group = NSCollectionLayoutGroup.vertical(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .absolute(35)
+            ),
+            subitems: [item]
+        )
+        let section = NSCollectionLayoutSection(group: group)
+        return section
+    }
 }
 
 // MARK: - Collection delegate
@@ -199,11 +219,19 @@ extension PTDiscoverMainView: UICollectionViewDelegate {
             let podcast = podcasts[indexPath.row]
             self.gotoPodcastDetails(podcast: podcast)
             break
-        case .curatedList(let curatedList):
-            let curatedPodcast = curatedList[indexPath.row]
-            self.gotoCuratedPodcast(curatedPodcast: curatedPodcast)
-            break
+//        case .curatedList(let curatedList):
+//            let curatedPodcast = curatedList[indexPath.row]
+//            self.gotoCuratedPodcast(curatedPodcast: curatedPodcast)
+//            break
+            case .genres(let genres):
+                let genre = genres[indexPath.row]
+                self.gotoSearch(with: genre)
+                break
         }
+    }
+    
+    private func gotoSearch(with genre: TalkGenre) {
+        
     }
     
     private func gotoPodcastDetails(podcast: PTPodcast) {
@@ -226,7 +254,8 @@ extension PTDiscoverMainView: UICollectionViewDataSource {
             case .topBanners(let banners): return banners.count
             case .bestPodcasts(let podcasts): return podcasts.count
             case .recentAddedPodcasts(let podcasts): return podcasts.count
-            case .curatedList(let curatedList): return curatedList.count
+            case .genres(let genres): return genres.count
+//            case .curatedList(let curatedList): return curatedList.count
         }
     }
     
@@ -254,13 +283,19 @@ extension PTDiscoverMainView: UICollectionViewDataSource {
                 let podcast = podcasts[indexPath.row]
                 cell.configure(with: podcast, loader: imageLoader)
                 return cell
-            case .curatedList(let categories):
-                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PTCuratedCategoryCollectionViewCell.identifier, for: indexPath) as? PTCuratedCategoryCollectionViewCell else {
-                    fatalError("Cannot create cell for: \(section)")
-                }
-                let curatedCategory = categories[indexPath.row]
-                cell.configure(with: curatedCategory)
-                return cell
+        case .genres(let genres):
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PTGenreCollectionViewCell.identifier, for: indexPath) as? PTGenreCollectionViewCell else {
+                fatalError("Cannot create cell for: \(section)")
+            }
+            cell.configure(with: genres[indexPath.row])
+            return cell
+//            case .curatedList(let categories):
+//                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PTCuratedCategoryCollectionViewCell.identifier, for: indexPath) as? PTCuratedCategoryCollectionViewCell else {
+//                    fatalError("Cannot create cell for: \(section)")
+//                }
+//                let curatedCategory = categories[indexPath.row]
+//                cell.configure(with: curatedCategory)
+//                return cell
         }
     }
     

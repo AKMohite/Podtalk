@@ -51,7 +51,8 @@ final class DiscoverViewmodel {
                     .topBanners(topBanners),
                     .bestPodcasts(bestList),
                     .recentAddedPodcasts(newAddedPodcast),
-                    .curatedList(curatedPodcasts)
+                    .genres(genres)
+//                    .curatedList(curatedPodcasts)
                 ]
                 self.delegate?.updateUI(for: sections)
             } catch {
@@ -67,14 +68,16 @@ internal enum DiscoverUISection {
     case topBanners([PTPodcast])
     case bestPodcasts([PTPodcast])
     case recentAddedPodcasts([PTPodcast])
-    case curatedList([CuratedPodcast])
+    case genres([TalkGenre])
+//    case curatedList([CuratedPodcast])
     
     var title: String {
         switch self {
             case .topBanners: return ""
             case .bestPodcasts: return "Best podcasts"
             case .recentAddedPodcasts: return "Recently added"
-            case .curatedList: return "Curated list"
+            case .genres: return "Browse by"
+//            case .curatedList: return "Curated list"
         }
     }
 }
