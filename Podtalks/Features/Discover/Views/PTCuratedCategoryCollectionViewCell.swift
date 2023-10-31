@@ -21,6 +21,7 @@ class PTCuratedCategoryCollectionViewCell: UICollectionViewCell {
         label.font = .systemFont(ofSize: 16, weight: .semibold)
         return label
     }()
+    private var podcastCollection: UICollectionView?
 //    private let viewAll: UIButton = {
 //        let button = UIButton()
 //        button.translatesAutoresizingMaskIntoConstraints = false
@@ -35,8 +36,11 @@ class PTCuratedCategoryCollectionViewCell: UICollectionViewCell {
         backgroundColor = .secondarySystemBackground
         layer.cornerRadius = 8
         layer.masksToBounds = true
+        let collectionView = createCollectionView()
+        self.podcastCollection = collectionView
         contentView.addSubview(categoryName)
 //        contentView.addSubview(viewAll)
+        contentView.addSubview(collectionView)
         addConstraints()
     }
     
@@ -45,6 +49,7 @@ class PTCuratedCategoryCollectionViewCell: UICollectionViewCell {
     }
     
     private func addConstraints() {
+        guard let collectionView = podcastCollection else { return }
         NSLayoutConstraint.activate([
             categoryName.topAnchor.constraint(equalTo: topAnchor, constant: 4),
             categoryName.leftAnchor.constraint(equalTo: leftAnchor, constant: 6),
@@ -53,7 +58,21 @@ class PTCuratedCategoryCollectionViewCell: UICollectionViewCell {
 
 //            viewAll.topAnchor.constraint(equalTo: topAnchor, constant: 4),
 //            viewAll.rightAnchor.constraint(equalTo: rightAnchor, constant: -6)
+            collectionView.topAnchor.constraint(equalTo: categoryName.bottomAnchor, constant: 2),
+            collectionView.leftAnchor.constraint(equalTo: leftAnchor, constant: 6),
+            collectionView.rightAnchor.constraint(equalTo: rightAnchor, constant: -6)
         ])
+        
+        collectionView.dataSource = self
+        collectionView.delegate = self
+    }
+    
+    private func createCollectionView() -> UICollectionView {
+        let collection = UICollectionView(frame: .zero, collectionViewLayout: .init())
+        collection.translatesAutoresizingMaskIntoConstraints = false
+        collection.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        collection.backgroundColor = .green
+        return collection
     }
     
     override func prepareForReuse() {
@@ -66,5 +85,23 @@ class PTCuratedCategoryCollectionViewCell: UICollectionViewCell {
         categoryName.text = curatedCategory.title
 //        viewAll.isHidden = !curatedCategory.canloadMore
     }
+    
+}
+
+// MARK: - Collection view data source
+extension PTCuratedCategoryCollectionViewCell: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 3
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
+        cell.backgroundColor = .purple
+        return cell
+    }
+}
+
+// MARK: - Collection view delegate
+extension PTCuratedCategoryCollectionViewCell: UICollectionViewDelegate {
     
 }
