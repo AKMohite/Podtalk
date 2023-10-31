@@ -7,6 +7,7 @@
 
 import UIKit
 
+// TODO: check https://github.com/dheerajghub/SwiggyClone or https://github.com/oradwanomar/Sway
 class PTCuratedCategoryCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "PTCuratedCategoryCollectionViewCell"
@@ -60,7 +61,8 @@ class PTCuratedCategoryCollectionViewCell: UICollectionViewCell {
 //            viewAll.rightAnchor.constraint(equalTo: rightAnchor, constant: -6)
             collectionView.topAnchor.constraint(equalTo: categoryName.bottomAnchor, constant: 2),
             collectionView.leftAnchor.constraint(equalTo: leftAnchor, constant: 6),
-            collectionView.rightAnchor.constraint(equalTo: rightAnchor, constant: -6)
+            collectionView.rightAnchor.constraint(equalTo: rightAnchor, constant: -6),
+            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 2)
         ])
         
         collectionView.dataSource = self
@@ -68,7 +70,29 @@ class PTCuratedCategoryCollectionViewCell: UICollectionViewCell {
     }
     
     private func createCollectionView() -> UICollectionView {
-        let collection = UICollectionView(frame: .zero, collectionViewLayout: .init())
+        let collection = UICollectionView(
+            frame: .zero,
+            collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { _, _ -> NSCollectionLayoutSection? in
+                let item = NSCollectionLayoutItem(
+                    layoutSize: NSCollectionLayoutSize(
+                        widthDimension: .fractionalWidth(1.0),
+                        heightDimension: .fractionalHeight(1.0)
+                    )
+                )
+                item.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 2, bottom: 4, trailing: 2)
+                let horizontalGroup = NSCollectionLayoutGroup.horizontal(
+                    layoutSize: NSCollectionLayoutSize(
+                        widthDimension: .absolute(150),
+                        heightDimension: .absolute(150)
+                    ),
+                    repeatingSubitem: item,
+                    count: 1
+                )
+                let section = NSCollectionLayoutSection(group: horizontalGroup)
+                section.orthogonalScrollingBehavior = .groupPaging
+                return section
+            })
+        )
         collection.translatesAutoresizingMaskIntoConstraints = false
         collection.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         collection.backgroundColor = .green
@@ -90,8 +114,10 @@ class PTCuratedCategoryCollectionViewCell: UICollectionViewCell {
 
 // MARK: - Collection view data source
 extension PTCuratedCategoryCollectionViewCell: UICollectionViewDataSource {
+    
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return 8
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
