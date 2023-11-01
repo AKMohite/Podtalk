@@ -18,6 +18,7 @@ final class DiscoverViewController: UIViewController, DiscoverViewmodelDelegate 
         title = "Discover"
         view.addSubview(mainView)
         addConstraints()
+        mainView.delegate = self
         viewModel.delegate = self
         viewModel.load()
     }
@@ -39,4 +40,14 @@ final class DiscoverViewController: UIViewController, DiscoverViewmodelDelegate 
         ])
     }
 
+}
+
+// MARK: - PTDiscoverMainView delegate
+extension DiscoverViewController: PTDiscoverMainViewDelegate {
+    func ptDiscoverMainView(_ discoveMainView: PTDiscoverMainView, onTap podcast: PTPodcast) {
+        let vc = PodcastDetailViewController(podcast: podcast)
+        vc.title = podcast.name
+        vc.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }

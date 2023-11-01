@@ -7,7 +7,13 @@
 
 import UIKit
 
+protocol PTDiscoverMainViewDelegate: AnyObject {
+    func ptDiscoverMainView(_ discoveMainView: PTDiscoverMainView, onTap podcast: PTPodcast)
+}
+
 class PTDiscoverMainView: UIView {
+    
+    weak var delegate: PTDiscoverMainViewDelegate?
     
     private let imageLoader = PTImageLoader()
     private let loader: UIActivityIndicatorView = {
@@ -262,7 +268,7 @@ extension PTDiscoverMainView: UICollectionViewDelegate {
     }
     
     private func gotoPodcastDetails(podcast: PTPodcast) {
-        
+        delegate?.ptDiscoverMainView(self, onTap: podcast)
     }
     
     private func gotoCuratedPodcast(curatedPodcast: CuratedPodcast) {}
