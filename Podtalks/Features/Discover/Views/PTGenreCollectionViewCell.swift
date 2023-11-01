@@ -14,7 +14,7 @@ class PTGenreCollectionViewCell: UICollectionViewCell {
     private let label: UILabel = {
         let text = UILabel()
         text.translatesAutoresizingMaskIntoConstraints = false
-        text.font = .systemFont(ofSize: 18, weight: .semibold)
+        text.font = .systemFont(ofSize: 18, weight: .medium)
         text.numberOfLines = 1
         return text
     }()

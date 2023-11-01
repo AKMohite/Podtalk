@@ -70,6 +70,7 @@ extension PTDiscoverMainView {
         let layout = createComposationalLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.register(PTDiscoverCategoryHeaderView.self, forSupplementaryViewOfKind: "headerKind", withReuseIdentifier: PTDiscoverCategoryHeaderView.identifier)
         collectionView.register(PTGenreCollectionViewCell.self, forCellWithReuseIdentifier: PTGenreCollectionViewCell.identifier)
         collectionView.register(PTDiscoverHeaderCollectionViewCell.self, forCellWithReuseIdentifier: PTDiscoverHeaderCollectionViewCell.identifier)
         collectionView.register(PTPodcastCollectionViewCell.self, forCellWithReuseIdentifier: PTPodcastCollectionViewCell.identifier)
@@ -153,6 +154,9 @@ extension PTDiscoverMainView {
             count: 1
         )
         let section = NSCollectionLayoutSection(group: horizontalGroup)
+        section.boundarySupplementaryItems = [
+            .init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(30)), elementKind: "headerKind", alignment: .top)
+        ]
         section.orthogonalScrollingBehavior = .groupPaging
         return section
     }
@@ -196,6 +200,9 @@ extension PTDiscoverMainView {
             subitems: [item]
         )
         let section = NSCollectionLayoutSection(group: group)
+        section.boundarySupplementaryItems = [
+            .init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(30)), elementKind: "headerKind", alignment: .top)
+        ]
         return section
     }
 }
@@ -227,6 +234,26 @@ extension PTDiscoverMainView: UICollectionViewDelegate {
                 let genre = genres[indexPath.row]
                 self.gotoSearch(with: genre)
                 break
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if kind == "headerKind" {
+            let section = sections[indexPath.section]
+            switch section {
+            case .bestPodcasts, .recentAddedPodcasts, .genres:
+                guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind
+                                                                                   , withReuseIdentifier: PTDiscoverCategoryHeaderView.identifier, for: indexPath) as? PTDiscoverCategoryHeaderView else {
+                    fatalError("Cannot get header view for \(section.title)")
+                }
+                header.configure(with: section.title)
+    //            header.delegate = self
+                return header
+            case .topBanners(_):
+                return UICollectionReusableView()
+            }
+        } else {
+            return UICollectionReusableView()
         }
     }
     
@@ -264,28 +291,28 @@ extension PTDiscoverMainView: UICollectionViewDataSource {
         switch section {
             case .topBanners(let podcasts):
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PTDiscoverHeaderCollectionViewCell.identifier, for: indexPath) as? PTDiscoverHeaderCollectionViewCell else {
-                    fatalError("Cannot create cell for: \(section)")
+                    fatalError("Cannot create cell for: \(section.title)")
                 }
                 let podcast = podcasts[indexPath.row]
                 cell.configure(with: podcast, loader: imageLoader)
                 return cell
             case .bestPodcasts(let podcasts):
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PTPodcastCollectionViewCell.identifier, for: indexPath) as? PTPodcastCollectionViewCell else {
-                    fatalError("Cannot create cell for: \(section)")
+                    fatalError("Cannot create cell for: \(section.title)")
                 }
                 let podcast = podcasts[indexPath.row]
                 cell.configure(with: podcast, loader: imageLoader)
                 return cell
             case .recentAddedPodcasts(let podcasts):
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PTPodcastCollectionViewCell.identifier, for: indexPath) as? PTPodcastCollectionViewCell else {
-                    fatalError("Cannot create cell for: \(section)")
+                    fatalError("Cannot create cell for: \(section.title)")
                 }
                 let podcast = podcasts[indexPath.row]
                 cell.configure(with: podcast, loader: imageLoader)
                 return cell
         case .genres(let genres):
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PTGenreCollectionViewCell.identifier, for: indexPath) as? PTGenreCollectionViewCell else {
-                fatalError("Cannot create cell for: \(section)")
+                fatalError("Cannot create cell for: \(section.title)")
             }
             cell.configure(with: genres[indexPath.row])
             return cell
