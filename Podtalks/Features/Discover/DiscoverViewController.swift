@@ -50,4 +50,8 @@ extension DiscoverViewController: PTDiscoverMainViewDelegate {
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
     }
+    
+    func ptDiscoverMainView(_ discoveMainView: PTDiscoverMainView, onTap genre: TalkGenre) {
+        
+    }
 }

@@ -9,6 +9,7 @@ import UIKit
 
 protocol PTDiscoverMainViewDelegate: AnyObject {
     func ptDiscoverMainView(_ discoveMainView: PTDiscoverMainView, onTap podcast: PTPodcast)
+    func ptDiscoverMainView(_ discoveMainView: PTDiscoverMainView, onTap genre: TalkGenre)
 }
 
 class PTDiscoverMainView: UIView {
@@ -264,7 +265,7 @@ extension PTDiscoverMainView: UICollectionViewDelegate {
     }
     
     private func gotoSearch(with genre: TalkGenre) {
-        
+        delegate?.ptDiscoverMainView(self, onTap: genre)
     }
     
     private func gotoPodcastDetails(podcast: PTPodcast) {
