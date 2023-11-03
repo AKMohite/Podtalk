@@ -13,7 +13,7 @@ protocol GenreDAO {
     func addAll(dto: [GenreDTO]) async throws -> Bool
     func add(dto: GenreDTO) async throws
     func getAll() async throws -> [GenreEntity]
-    func get(by ids: [String]) async throws -> [GenreEntity]
+    func get(by ids: [Int16]) async throws -> [GenreEntity]
     func deleteAll() async throws
     
 }
@@ -51,7 +51,7 @@ final class PTGenreDAO: GenreDAO {
         return result
     }
     
-    func get(by ids: [String]) async throws -> [GenreEntity] {
+    func get(by ids: [Int16]) async throws -> [GenreEntity] {
         let fetchRequest = NSFetchRequest<GenreEntity>(entityName: "GenreEntity")
         let predicate = NSPredicate(format: "ANY id IN %@", ids)
         fetchRequest.predicate = predicate
