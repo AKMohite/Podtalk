@@ -45,7 +45,8 @@ final class PTPodcastRepository: PodcastRepository {
             Int16(id)
         }
         let genres: [TalkGenre] = try await genreRepo.getGenre(by: genreIds)
-        let details = PTPodcastDetails(id: dto.id, title: dto.title, description: dto.description, thumbnail: URL(string: dto.thumbnail), image: URL(string: dto.image), genres: genres, listenScore: dto.listen_score, totalEpisodes: dto.total_episodes, isExplicit: dto.explicit_content, updateFrequency: dto.update_frequency_hours, episodes: episodes)
+        let podcastInfo = PTPodcastInfo(id: dto.id, title: dto.title, description: dto.description, thumbnail: URL(string: dto.thumbnail), image: URL(string: dto.image), genres: genres, listenScore: dto.listen_score, totalEpisodes: dto.total_episodes, isExplicit: dto.explicit_content, updateFrequency: dto.update_frequency_hours)
+        let details = PTPodcastDetails(info: podcastInfo, episodes: episodes)
         return details
     }
     

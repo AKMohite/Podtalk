@@ -42,9 +42,8 @@ class PodcastDetailViewController: UIViewController {
 
 // MARK: - Viewmodel delegate
 extension PodcastDetailViewController: PodcastDetailViewModelDelegate {
-    
-    func updateUI(detail: PTPodcastDetails) {
-        print(detail)
+    func updateUI(with detail: PTPodcastDetails) {
+        detailView.load(with: detail)
     }
     
     func showError(with message: String?) {

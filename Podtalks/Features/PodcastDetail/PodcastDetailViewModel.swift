@@ -8,7 +8,7 @@
 import Foundation
 
 protocol PodcastDetailViewModelDelegate: AnyObject {
-    func updateUI(detail: PTPodcastDetails)
+    func updateUI(with detail: PTPodcastDetails)
     func showError(with message: String?)
 }
 
@@ -25,7 +25,7 @@ final class PodcastDetailViewModel {
         Task {
             do {
                 let details = try await repo.fetchDetails(for: podcast.id)
-                delegate?.updateUI(detail: details)
+                delegate?.updateUI(with: details)
             } catch {
                 delegate?.showError(with: error.localizedDescription)
             }

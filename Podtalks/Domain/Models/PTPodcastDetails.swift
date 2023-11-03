@@ -8,6 +8,11 @@
 import Foundation
 
 struct PTPodcastDetails {
+    let info: PTPodcastInfo
+    let episodes: [PTEpisode]
+}
+
+struct PTPodcastInfo {
     let id: String
     let title: String
     let description: String
@@ -23,5 +28,4 @@ struct PTPodcastDetails {
 //    let earliest_pub_date_ms: Date
 //    let next_episode_pub_date: Date
     let updateFrequency: Int
-    let episodes: [PTEpisode]
 }
