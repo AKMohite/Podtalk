@@ -68,7 +68,7 @@ extension PodcastDetailView {
         let layout = createCompositionalLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
+        collectionView.register(PodcastDetailInfoReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: PodcastDetailInfoReusableView.identifier)
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         return collectionView
     }
@@ -90,7 +90,7 @@ extension PodcastDetailView {
         let group = NSCollectionLayoutGroup.vertical(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
-                heightDimension: .fractionalWidth(1.0)
+                heightDimension: .absolute(60)
             ),
             repeatingSubitem: item,
             count: 1
@@ -128,7 +128,7 @@ extension PodcastDetailView: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        guard kind == UICollectionView.elementKindSectionHeader, let header = collectionView.dequeueReusableCell(withReuseIdentifier: "header", for: indexPath) as? UICollectionReusableView else {
+        guard kind == UICollectionView.elementKindSectionHeader, let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: PodcastDetailInfoReusableView.identifier, for: indexPath) as? PodcastDetailInfoReusableView else {
             fatalError("Cannot form view for \(kind)")
         }
         header.backgroundColor = .green

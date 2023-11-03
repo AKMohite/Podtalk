@@ -25,9 +25,13 @@ final class PodcastDetailViewModel {
         Task {
             do {
                 let details = try await repo.fetchDetails(for: podcast.id)
-                delegate?.updateUI(with: details)
+                DispatchQueue.main.async {
+                    self.delegate?.updateUI(with: details)
+                }
             } catch {
-                delegate?.showError(with: error.localizedDescription)
+                DispatchQueue.main.async {
+                    self.delegate?.showError(with: error.localizedDescription)
+                }
             }
         }
     }
