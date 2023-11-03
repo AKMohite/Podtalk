@@ -10,6 +10,8 @@ import UIKit
 class PodcastDetailViewController: UIViewController {
     
     private let podcast: PTPodcast
+    private let detailView: PodcastDetailView = PodcastDetailView()
+    private let viewModel = PodcastDetailViewModel()
     
     init(podcast: PTPodcast) {
         self.podcast = podcast
@@ -22,6 +24,30 @@ class PodcastDetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .red
+        view.addSubview(detailView)
+        addConstraints()
+        viewModel.delegate = self
+        viewModel.fetchDetails(with: podcast)
+    }
+    
+    private func addConstraints() {
+        NSLayoutConstraint.activate([
+            detailView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            detailView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
+            detailView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
+            detailView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+    }
+}
+
+// MARK: - Viewmodel delegate
+extension PodcastDetailViewController: PodcastDetailViewModelDelegate {
+    
+    func updateUI(detail: PTPodcastDetails) {
+        print(detail)
+    }
+    
+    func showError(with message: String?) {
+        
     }
 }
