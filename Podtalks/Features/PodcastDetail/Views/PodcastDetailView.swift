@@ -18,6 +18,7 @@ class PodcastDetailView: UIView {
     }()
     private var collectionView: UICollectionView?
     private var detail: PTPodcastDetails?
+    private let imageLoader = PTImageLoader()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -44,10 +45,10 @@ class PodcastDetailView: UIView {
             progress.centerXAnchor.constraint(equalTo: centerXAnchor),
             progress.centerYAnchor.constraint(equalTo: centerYAnchor),
             
-            collectionView.topAnchor.constraint(equalTo: topAnchor),
-            collectionView.leftAnchor.constraint(equalTo: leftAnchor),
-            collectionView.rightAnchor.constraint(equalTo: rightAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            collectionView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            collectionView.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor),
+            collectionView.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
             
         ])
         
@@ -100,7 +101,7 @@ extension PodcastDetailView {
             NSCollectionLayoutBoundarySupplementaryItem(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1),
-                    heightDimension: .fractionalWidth(1)
+                    heightDimension: .absolute(500)
                 ),
                 elementKind: UICollectionView.elementKindSectionHeader,
                 alignment: .top
@@ -131,7 +132,9 @@ extension PodcastDetailView: UICollectionViewDataSource {
         guard kind == UICollectionView.elementKindSectionHeader, let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: PodcastDetailInfoReusableView.identifier, for: indexPath) as? PodcastDetailInfoReusableView else {
             fatalError("Cannot form view for \(kind)")
         }
-        header.backgroundColor = .green
+        if let info = detail?.info {
+            header.configure(with: info, loader: imageLoader)
+        }
         return header
     }
 }
