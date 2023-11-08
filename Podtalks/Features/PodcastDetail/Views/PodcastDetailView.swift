@@ -87,11 +87,11 @@ extension PodcastDetailView {
             widthDimension: .fractionalWidth(1.0),
             heightDimension: .fractionalHeight(1.0))
         )
-        item.contentInsets = NSDirectionalEdgeInsets(top: 1, leading: 2, bottom: 1, trailing: 2)
+        item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 2, bottom: 2, trailing: 2)
         let group = NSCollectionLayoutGroup.vertical(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
-                heightDimension: .absolute(60)
+                heightDimension: .absolute(65)
             ),
             repeatingSubitem: item,
             count: 1

@@ -15,7 +15,7 @@ class PodcastEpisodeCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 1
-        label.font = .systemFont(ofSize: 16, weight: .bold)
+        label.font = .systemFont(ofSize: 16, weight: .semibold)
         return label
     }()
     private let duration: UILabel = {
@@ -45,6 +45,8 @@ class PodcastEpisodeCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.backgroundColor = .tertiarySystemBackground
+        contentView.layer.masksToBounds = true
+        contentView.layer.cornerRadius = 4
         contentView.addSubview(title)
         contentView.addSubview(duration)
         contentView.addSubview(publishedDate)
@@ -61,19 +63,19 @@ class PodcastEpisodeCollectionViewCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             playButton.widthAnchor.constraint(equalToConstant: 30),
             playButton.topAnchor.constraint(equalTo: contentView.topAnchor),
-            playButton.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -4),
+            playButton.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -8),
             playButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
             publishedDate.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
-            publishedDate.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 4),
+            publishedDate.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 8),
             publishedDate.rightAnchor.constraint(equalTo: playButton.leftAnchor, constant: -4),
             
             title.topAnchor.constraint(equalTo: publishedDate.bottomAnchor, constant: 2),
-            title.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 4),
+            title.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 8),
             title.rightAnchor.constraint(equalTo: playButton.leftAnchor, constant: -4),
             
             duration.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 2),
-            duration.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 4),
+            duration.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 8),
             duration.rightAnchor.constraint(equalTo: playButton.leftAnchor, constant: -4),
             duration.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4)
             
