@@ -50,7 +50,7 @@ class PodcastDetailInfoReusableView: UICollectionReusableView {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.axis = .horizontal
         view.alignment = .leading
-        view.distribution = .fillProportionally
+        view.distribution = UIStackView.Distribution.fillEqually
         return view
     }()
     private let favorite: UIButton = {
@@ -104,7 +104,8 @@ class PodcastDetailInfoReusableView: UICollectionReusableView {
             
             genresStack.topAnchor.constraint(equalTo: podcastDescription.bottomAnchor, constant: 2),
             genresStack.leftAnchor.constraint(equalTo: leftAnchor, constant: 8),
-            genresStack.rightAnchor.constraint(equalTo: rightAnchor, constant: -8)
+            genresStack.rightAnchor.constraint(equalTo: rightAnchor, constant: -8),
+            genresStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8)
             
         ])
     }
@@ -118,7 +119,9 @@ class PodcastDetailInfoReusableView: UICollectionReusableView {
         imageTaskId = nil
         title.text = nil
         podcastDescription.text = nil
-//        genresStack.chil
+        for btn in genresStack.subviews {
+            btn.removeFromSuperview()
+        }
     }
     
     func configure(with info: PTPodcastInfo, loader: PTImageLoader) {
@@ -137,10 +140,22 @@ class PodcastDetailInfoReusableView: UICollectionReusableView {
         title.text = info.title
         podcastDescription.text = info.description
         for genre in info.genres {
-            let button = UIButton()
-            button.setTitle(genre.name, for: .normal)
+            var config = UIButton.Configuration.bordered()
+            config.title = genre.name
+            config.buttonSize = .medium
+            let button = UIButton(configuration: config)
             button.tag = genre.id
+            button.addTarget(self, action: #selector(onGenreClick), for: .touchUpInside)
             genresStack.addArrangedSubview(button)
+            genresStack.setCustomSpacing(8, after: button)
+        }
+    }
+    
+    @objc private func onGenreClick(_ sender: UIButton) {
+        let genreId = sender.tag
+        if genreId > 0 {
+            print(genreId)
+//            TODO: handle search by genre
         }
     }
         

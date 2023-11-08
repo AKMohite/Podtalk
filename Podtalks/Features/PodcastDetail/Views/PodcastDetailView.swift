@@ -70,7 +70,7 @@ extension PodcastDetailView {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(PodcastDetailInfoReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: PodcastDetailInfoReusableView.identifier)
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.register(PodcastEpisodeCollectionViewCell.self, forCellWithReuseIdentifier: PodcastEpisodeCollectionViewCell.identifier)
         return collectionView
     }
     
@@ -85,7 +85,7 @@ extension PodcastDetailView {
     private func createDetailSection() -> NSCollectionLayoutSection {
         let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .fractionalWidth(1.0))
+            heightDimension: .fractionalHeight(1.0))
         )
         item.contentInsets = NSDirectionalEdgeInsets(top: 1, leading: 2, bottom: 1, trailing: 2)
         let group = NSCollectionLayoutGroup.vertical(
@@ -123,8 +123,11 @@ extension PodcastDetailView: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-        cell.backgroundColor = .cyan
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PodcastEpisodeCollectionViewCell.identifier, for: indexPath) as? PodcastEpisodeCollectionViewCell, let episodes = detail?.episodes else {
+            fatalError("Cannot create cell for \(PodcastEpisodeCollectionViewCell.identifier)")
+        }
+        let episode = episodes[indexPath.row]
+        cell.configure(with: episode)
         return cell
     }
     

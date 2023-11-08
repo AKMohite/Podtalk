@@ -16,4 +16,9 @@ struct PTEpisode {
     let thumbnail: URL?
     let audioDuration: Int
     let publishedDate: Date
+    
+    var duration: String {
+        let (minutes, seconds) = (audioDuration / 60, (audioDuration % 60))
+        return "\(minutes):\(seconds)"
+    }
 }
