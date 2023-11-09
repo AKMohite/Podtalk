@@ -101,7 +101,7 @@ extension PodcastDetailView {
             NSCollectionLayoutBoundarySupplementaryItem(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(500)
+                    heightDimension: .estimated(300)
                 ),
                 elementKind: UICollectionView.elementKindSectionHeader,
                 alignment: .top
