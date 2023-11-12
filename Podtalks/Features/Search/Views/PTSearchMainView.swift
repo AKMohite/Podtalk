@@ -20,7 +20,7 @@ class PTSearchMainView: UIView {
         let group = NSCollectionLayoutGroup.horizontal(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1),
-                heightDimension: .absolute(100)
+                heightDimension: .absolute(80)
             ),
             repeatingSubitem: item,
             count: 2
@@ -28,12 +28,13 @@ class PTSearchMainView: UIView {
         let section = NSCollectionLayoutSection(group: group)
         return section
     }))
+    private var genres: [TalkGenre] = []
     
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
-        backgroundColor = .systemMint
+        backgroundColor = .systemBackground
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(collectionView)
         collectionView.register(PTGenreCollectionViewCell.self, forCellWithReuseIdentifier: PTGenreCollectionViewCell.identifier)
@@ -55,19 +56,25 @@ class PTSearchMainView: UIView {
         ])
     }
     
+    func reload(with genres: [TalkGenre]) {
+        self.genres = genres
+        collectionView.reloadData()
+    }
+    
 }
 
 // MARK: - Collection view data source
 extension PTSearchMainView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 16
+        return genres.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PTGenreCollectionViewCell.identifier, for: indexPath) as? PTGenreCollectionViewCell else {
             fatalError("Cannot get cell for search by genres")
         }
-        cell.configure(with: TalkGenre(id: 2, name: "Tech"))
+        let genre = genres[indexPath.row]
+        cell.configure(with: genre)
         return cell
     }
 }

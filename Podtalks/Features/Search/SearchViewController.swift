@@ -10,6 +10,7 @@ import UIKit
 final class SearchViewController: UIViewController {
     
     private let searchView = PTSearchMainView()
+    private let viewModel = SearchViewModel()
     private let searchController: UISearchController = {
         let results = PTSearchResultViewController()
         let vc = UISearchController(searchResultsController: results)
@@ -27,6 +28,8 @@ final class SearchViewController: UIViewController {
         navigationItem.searchController = searchController
         view.addSubview(searchView)
         addConstraints()
+        viewModel.getAllGenres()
+        viewModel.delegate = self
     }
     
     private func addConstraints() {
@@ -49,5 +52,18 @@ extension SearchViewController: UISearchResultsUpdating {
 //        perform search
         print(query)
     }
+    
+}
+
+// MARK: - Search viewmodel delegate
+extension SearchViewController: SearchViewModelDelegate {
+    func load(with genres: [TalkGenre]) {
+        searchView.reload(with: genres)
+    }
+    
+    func showError(with message: String?) {
+        print(message!)
+    }
+    
     
 }
