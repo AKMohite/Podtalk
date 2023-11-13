@@ -74,7 +74,7 @@ class PTDiscoverMainView: UIView {
 // MARK: Setup collection section skeleton
 extension PTDiscoverMainView {
     private func createCollectionView() -> UICollectionView {
-        let layout = createComposationalLayout()
+        let layout = createCompositionalLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(PTDiscoverCategoryHeaderView.self, forSupplementaryViewOfKind: "headerKind", withReuseIdentifier: PTDiscoverCategoryHeaderView.identifier)
@@ -85,7 +85,7 @@ extension PTDiscoverMainView {
         return collectionView
     }
     
-    private func createComposationalLayout() -> UICollectionViewCompositionalLayout {
+    private func createCompositionalLayout() -> UICollectionViewCompositionalLayout {
         let layout = UICollectionViewCompositionalLayout { sectionIndex, _ in
             return self.createSection(for: sectionIndex)
         }

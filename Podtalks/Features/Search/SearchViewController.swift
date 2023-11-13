@@ -60,10 +60,12 @@ extension SearchViewController: SearchViewModelDelegate {
     }
     
     func refresh(with results: [PTSearchResults]) {
-        guard let resultsController = searchController.searchResultsController as? PTSearchResultViewController else {
-            return
+        DispatchQueue.main.async {
+            guard let resultsController = self.searchController.searchResultsController as? PTSearchResultViewController else {
+                return
+            }
+            resultsController.load(with: results)
         }
-        resultsController.load(with: results)
     }
     
     func showError(with message: String?) {
