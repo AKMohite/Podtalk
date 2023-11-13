@@ -13,5 +13,9 @@ class PTSearchResultViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
     }
+    
+    func load(with results: [PTSearchResults]) {
+        
+    }
 
 }

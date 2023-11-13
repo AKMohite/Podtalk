@@ -24,6 +24,7 @@ final class SearchViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         title = "Search"
+        searchController.searchBar.delegate = self
         searchController.searchResultsUpdater = self
         navigationItem.searchController = searchController
         view.addSubview(searchView)
@@ -31,7 +32,6 @@ final class SearchViewController: UIViewController {
         searchView.delegate = self
         viewModel.delegate = self
         viewModel.getAllGenres()
-        viewModel.search(with: "android")
     }
     
     private func addConstraints() {
@@ -48,11 +48,7 @@ final class SearchViewController: UIViewController {
 extension SearchViewController: UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController) {
-        guard let resultsController = searchController.searchResultsController as? PTSearchResultViewController, let query = searchController.searchBar.text, !query.trimmingCharacters(in: .whitespaces).isEmpty else {
-            return
-        }
-//        perform search
-        print(query)
+        
     }
     
 }
@@ -63,8 +59,11 @@ extension SearchViewController: SearchViewModelDelegate {
         searchView.reload(with: genres)
     }
     
-    func refresh(with results: PTSearchResults) {
-        
+    func refresh(with results: [PTSearchResults]) {
+        guard let resultsController = searchController.searchResultsController as? PTSearchResultViewController else {
+            return
+        }
+        resultsController.load(with: results)
     }
     
     func showError(with message: String?) {
@@ -81,4 +80,14 @@ extension SearchViewController: PTSearchMainViewDelegate {
         
     }
     
+}
+
+// MARK: - Search bar delegate
+extension SearchViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let query = searchBar.text, !query.trimmingCharacters(in: .whitespaces).isEmpty else {
+            return
+        }
+        viewModel.search(with: query)
+    }
 }

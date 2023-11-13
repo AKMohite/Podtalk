@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PTSearchResults {
-    let podcasts: [PTPodcast]
-    let episodes: [PTEpisode]
+enum PTSearchResults {
+    case podcasts([PTPodcast])
+    case episodes([PTEpisode])
 }

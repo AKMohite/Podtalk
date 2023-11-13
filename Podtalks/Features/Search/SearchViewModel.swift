@@ -9,7 +9,7 @@ import Foundation
 
 protocol SearchViewModelDelegate: AnyObject {
     func load(with genres: [TalkGenre])
-    func refresh(with results: PTSearchResults)
+    func refresh(with results: [PTSearchResults])
     func showError(with message: String?)
 }
 
@@ -43,7 +43,10 @@ final class SearchViewModel {
                 async let podcasts = podcastRepo.searchPodcasts(with: query)
                 async let episodes = podcastRepo.searchEpisodes(with: query)
                 let (podcastResults, episodeResults) = try await (podcasts, episodes)
-                let results = PTSearchResults(podcasts: podcastResults, episodes: episodeResults)
+                let results = [
+                    PTSearchResults.podcasts(podcastResults),
+                    PTSearchResults.episodes(episodeResults)
+                ]
                 delegate?.refresh(with: results)
             } catch {
                 delegate?.showError(with: error.localizedDescription)
