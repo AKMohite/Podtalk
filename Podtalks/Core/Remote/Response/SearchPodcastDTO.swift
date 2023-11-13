@@ -21,6 +21,6 @@ struct SearchPodcastResultDTO: Decodable {
     let publisher_original: String
     let image: String
     let thumbnail: String
-    let genre_ids: [String]
+    let genre_ids: [Int]
     let total_episodes: Int
 }

@@ -14,7 +14,7 @@ struct GenresDTO: Decodable {
 struct GenreDTO: Decodable {
     let id: Int
     let name: String
-    let parentId: Int
+    let parentId: Int?
     
     enum CodingKeys: String, CodingKey {
         case parentId = "parent_id"

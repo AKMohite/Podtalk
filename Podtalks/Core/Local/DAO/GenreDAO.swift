@@ -27,7 +27,7 @@ final class PTGenreDAO: GenreDAO {
                 let localGenre = GenreEntity(context: privateManagedContext)
                 localGenre.id = Int16(genre.id)
                 localGenre.name = genre.name
-                localGenre.parent_id = Int16(genre.parentId)
+                localGenre.parent_id = Int16(genre.parentId ?? 0)
                 localGenre.created_at = .now
             }
             if (privateManagedContext.hasChanges) {
@@ -41,7 +41,7 @@ final class PTGenreDAO: GenreDAO {
         let entity = GenreEntity(context: PersistentStorage.shared.context)
         entity.id = Int16(dto.id)
         entity.name = dto.name
-        entity.parent_id = Int16(dto.parentId)
+        entity.parent_id = Int16(dto.parentId ?? 0)
         entity.created_at = .now
         PersistentStorage.shared.saveContext()
     }

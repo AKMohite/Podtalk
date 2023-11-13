@@ -19,7 +19,7 @@ struct PodcastDTO: Decodable {
     let country: String?
     let website: String?
     let publisher: String?
-    let listen_score: Int?
+    let listen_score: Int? // in mock we get int and in prod we get string
     let total_episodes: Int?
     let explicit_content: Bool?
     let latest_pub_date_ms: Date?
