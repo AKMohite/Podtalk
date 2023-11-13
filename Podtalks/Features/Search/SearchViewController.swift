@@ -28,8 +28,10 @@ final class SearchViewController: UIViewController {
         navigationItem.searchController = searchController
         view.addSubview(searchView)
         addConstraints()
-        viewModel.getAllGenres()
+        searchView.delegate = self
         viewModel.delegate = self
+        viewModel.getAllGenres()
+        viewModel.search(with: "android")
     }
     
     private func addConstraints() {
@@ -61,9 +63,22 @@ extension SearchViewController: SearchViewModelDelegate {
         searchView.reload(with: genres)
     }
     
+    func refresh(with results: PTSearchResults) {
+        
+    }
+    
     func showError(with message: String?) {
         print(message!)
     }
     
+    
+}
+
+// MARK: - Search view delegate
+extension SearchViewController: PTSearchMainViewDelegate {
+    
+    func ptSearchMainView(_ searchView: PTSearchMainView, didSelectItem genre: TalkGenre) {
+        
+    }
     
 }

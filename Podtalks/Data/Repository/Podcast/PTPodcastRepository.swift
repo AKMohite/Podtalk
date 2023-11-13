@@ -17,14 +17,6 @@ final class PTPodcastRepository: PodcastRepository {
         self.genreRepo = genreRepo
     }
     
-    fileprivate func getPodcasts(with paramters: [String : String]) async throws -> [PTPodcast] {
-        let dto = try await api.execute(request: .init(endpoint: .best_podcasts, queryParameters: paramters), expecting: BestPodcastsDTO.self)
-        let podcasts = dto.podcasts.compactMap { podcast in
-            PTPodcast(id: podcast.id, name: podcast.title, description: podcast.description ?? "NA", numberOfEpisodes: String(podcast.total_episodes ?? 0), image: URL(string: podcast.image), thumbnail: URL(string: podcast.thumbnail), publishedBy: podcast.publisher)
-        }
-        return podcasts
-    }
-    
     func getBestPodcasts() async throws -> [PTPodcast] {
         let paramters = ["sort" : "listen_score"]
         return try await getPodcasts(with: paramters)
@@ -59,5 +51,37 @@ final class PTPodcastRepository: PodcastRepository {
             return CuratedPodcast(id: curatedPodcasts.id, title: curatedPodcasts.title, total: curatedPodcasts.total, description: curatedPodcasts.description, podcasts: podcasts)
         }
         return curatedList
+    }
+    
+    func searchPodcasts(with query: String) async throws -> [PTPodcast] {
+        let queryParams = [
+            "q": query,
+            "type": "podcast"
+        ]
+        let results = try await api.execute(request: .init(endpoint: .search, queryParameters: queryParams), expecting: SearchPodcastDTO.self)
+        let podcasts = results.results.compactMap { podcast in
+            PTPodcast(id: podcast.id, name: podcast.title_original, description: podcast.description_original, numberOfEpisodes: String(podcast.total_episodes), image: URL(string: podcast.image), thumbnail: URL(string: podcast.thumbnail), publishedBy: podcast.publisher_original)
+        }
+        return podcasts
+    }
+    
+    func searchEpisodes(with query: String) async throws -> [PTEpisode] {
+        let queryParams = [
+            "q": query,
+            "type": "episode"
+        ]
+        let results = try await api.execute(request: .init(endpoint: .search, queryParameters: queryParams), expecting: SearchEpisodeDTO.self)
+        let episodes = results.results.compactMap { episode in
+            PTEpisode(id: episode.id, title: episode.title_original, description: episode.description_original, audio: URL(string: episode.audio), image: URL(string: episode.image), thumbnail: URL(string: episode.thumbnail), audioDuration: episode.audio_length_sec, publishedDate: episode.pub_date_ms)
+        }
+        return episodes
+    }
+    
+    fileprivate func getPodcasts(with paramters: [String : String]) async throws -> [PTPodcast] {
+        let dto = try await api.execute(request: .init(endpoint: .best_podcasts, queryParameters: paramters), expecting: BestPodcastsDTO.self)
+        let podcasts = dto.podcasts.compactMap { podcast in
+            PTPodcast(id: podcast.id, name: podcast.title, description: podcast.description ?? "NA", numberOfEpisodes: String(podcast.total_episodes ?? 0), image: URL(string: podcast.image), thumbnail: URL(string: podcast.thumbnail), publishedBy: podcast.publisher)
+        }
+        return podcasts
     }
 }

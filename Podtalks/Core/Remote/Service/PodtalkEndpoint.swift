@@ -13,4 +13,5 @@ enum PodtalkEndpoint: String {
     case curated_podcasts
     case podcasts
     case episodes
+    case search
 }

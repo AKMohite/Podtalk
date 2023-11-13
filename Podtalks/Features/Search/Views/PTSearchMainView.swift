@@ -7,8 +7,13 @@
 
 import UIKit
 
+protocol PTSearchMainViewDelegate: AnyObject {
+    func ptSearchMainView(_ searchView: PTSearchMainView, didSelectItem genre: TalkGenre)
+}
+
 class PTSearchMainView: UIView {
     
+    weak var delegate: PTSearchMainViewDelegate?
     private let collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { _, _ in
         let item = NSCollectionLayoutItem(
             layoutSize: NSCollectionLayoutSize(
@@ -82,6 +87,7 @@ extension PTSearchMainView: UICollectionViewDataSource {
 // MARK: - Collection view delegate
 extension PTSearchMainView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
+        let genre = genres[indexPath.row]
+        delegate?.ptSearchMainView(self, didSelectItem: genre)
     }
 }
