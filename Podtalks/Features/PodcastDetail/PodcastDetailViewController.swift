@@ -26,6 +26,7 @@ class PodcastDetailViewController: UIViewController {
         super.viewDidLoad()
         view.addSubview(detailView)
         addConstraints()
+        detailView.delegate = self
         viewModel.delegate = self
         viewModel.fetchDetails(with: podcast)
     }
@@ -37,6 +38,16 @@ class PodcastDetailViewController: UIViewController {
             detailView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
             detailView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+    }
+}
+
+// MARK: - Detail view delegate
+extension PodcastDetailViewController: PodcastDetailViewDelegate {
+    func podcastDetailView(_ detailView: PodcastDetailView, didTap episode: PTEpisode) {
+        let vc = EpisodeDetailViewController(episode: episode)
+        vc.title = episode.title
+        vc.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 

@@ -7,8 +7,13 @@
 
 import UIKit
 
+protocol PodcastDetailViewDelegate: AnyObject {
+    func podcastDetailView(_ detailView: PodcastDetailView, didTap episode: PTEpisode)
+}
+
 class PodcastDetailView: UIView {
     
+    weak var delegate: PodcastDetailViewDelegate?
     private let progress: UIActivityIndicatorView = {
         let loader = UIActivityIndicatorView()
         loader.translatesAutoresizingMaskIntoConstraints = false
@@ -144,4 +149,11 @@ extension PodcastDetailView: UICollectionViewDataSource {
 
 // MARK: - Collection view delegate
 extension PodcastDetailView: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let episodes = detail?.episodes else {
+            return
+        }
+        let episode = episodes[indexPath.row]
+        delegate?.podcastDetailView(self, didTap: episode)
+    }
 }

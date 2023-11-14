@@ -58,7 +58,10 @@ extension SearchViewController: PTSearchResultViewControllerDelegate {
     }
     
     func ptSearchResultViewController(_ controller: PTSearchResultViewController, didTap episode: PTEpisode) {
-        
+        let vc = EpisodeDetailViewController(episode: episode)
+        vc.title = episode.title
+        vc.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 
