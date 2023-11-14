@@ -24,7 +24,23 @@ class EpisodeDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemIndigo
+        viewModel.delegate = self
         viewModel.fetchDetails(with: episode)
     }
 
+}
+
+// MARK: - View model delegate
+extension EpisodeDetailViewController: EpisodeDetailViewmodelDelegate {
+    
+    func loadData(with details: PTEpisode) {
+        DispatchQueue.main.async {
+            print(details)
+        }
+    }
+    
+    func showError(with message: String?) {
+        
+    }
+    
 }
