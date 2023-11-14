@@ -7,10 +7,17 @@
 
 import UIKit
 
+protocol PTSearchResultsViewDelegate: AnyObject {
+    func ptSearchResultsView(_ searchResultsView: PTSearchResultsView, didSelectItem podcast: PTPodcast)
+    func ptSearchResultsView(_ searchResultsView: PTSearchResultsView, didSelectItem episode: PTEpisode)
+}
+
 class PTSearchResultsView: UIView {
     
+    weak var delegate: PTSearchResultsViewDelegate?
     private var collectionView: UICollectionView?
     private var sections: [PTSearchResults] = []
+    private let imageLoader = PTImageLoader()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -53,7 +60,8 @@ extension PTSearchResultsView {
         let layout = createCompositionalLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.register(PTDiscoverCategoryHeaderView.self, forSupplementaryViewOfKind: "headerKind", withReuseIdentifier: PTDiscoverCategoryHeaderView.identifier)
+        collectionView.register(PTPodcastTileCollectionViewCell.self, forCellWithReuseIdentifier: PTPodcastTileCollectionViewCell.identifier)
         collectionView.register(PodcastEpisodeCollectionViewCell.self, forCellWithReuseIdentifier: PodcastEpisodeCollectionViewCell.identifier)
         return collectionView
     }
@@ -84,6 +92,9 @@ extension PTSearchResultsView {
             subitems: [item]
         )
         let section = NSCollectionLayoutSection(group: group)
+        section.boundarySupplementaryItems = [
+            .init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(30)), elementKind: "headerKind", alignment: .top)
+        ]
         section.orthogonalScrollingBehavior = .continuous
         return section
     }
@@ -103,6 +114,9 @@ extension PTSearchResultsView {
             count: 1
         )
         let section = NSCollectionLayoutSection(group: group)
+        section.boundarySupplementaryItems = [
+            .init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(30)), elementKind: "headerKind", alignment: .top)
+        ]
         return section
     }
 }
@@ -125,8 +139,11 @@ extension PTSearchResultsView: UICollectionViewDataSource {
         let section = sections[indexPath.section]
         switch section {
             case .podcasts(let podcasts):
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-            cell.backgroundColor = .red
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PTPodcastTileCollectionViewCell.identifier, for: indexPath) as? PTPodcastTileCollectionViewCell else {
+                fatalError("Cannot get podcast cell for \(section)")
+            }
+            let podcast = podcasts[indexPath.row]
+            cell.config(with: podcast, loader: imageLoader)
             return cell
             case .episodes(let episodes):
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PodcastEpisodeCollectionViewCell.identifier, for: indexPath) as? PodcastEpisodeCollectionViewCell else {
@@ -137,7 +154,40 @@ extension PTSearchResultsView: UICollectionViewDataSource {
             return cell
         }
     }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if kind == "headerKind" {
+            let section = sections[indexPath.section]
+            switch section {
+                case .podcasts, .episodes:
+                    guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind
+                                                                                       , withReuseIdentifier: PTDiscoverCategoryHeaderView.identifier, for: indexPath) as? PTDiscoverCategoryHeaderView else {
+                        fatalError("Cannot get header view for \(section.title)")
+                    }
+                    header.configure(with: section.title)
+                    //            header.delegate = self
+                    return header
+            }
+        } else {
+            return UICollectionReusableView()
+        }
+    }
+        
 }
 
 // MARK: - Collection view delegate
-extension PTSearchResultsView: UICollectionViewDelegate {}
+extension PTSearchResultsView: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let section = sections[indexPath.section]
+        switch section {
+            case .podcasts(let podcasts):
+                let podcast = podcasts[indexPath.row]
+                delegate?.ptSearchResultsView(self, didSelectItem: podcast)
+                break
+            case .episodes(let episodes):
+                let episode = episodes[indexPath.row]
+                delegate?.ptSearchResultsView(self, didSelectItem: episode)
+                break
+        }
+    }
+}

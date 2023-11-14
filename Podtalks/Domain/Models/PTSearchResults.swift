@@ -10,4 +10,11 @@ import Foundation
 enum PTSearchResults {
     case podcasts([PTPodcast])
     case episodes([PTEpisode])
+    
+    var title: String {
+        switch self {
+            case .podcasts: return "Podcasts"
+            case .episodes(let array): return "Episodes"
+        }
+    }
 }

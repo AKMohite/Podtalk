@@ -7,14 +7,21 @@
 
 import UIKit
 
+protocol PTSearchResultViewControllerDelegate: AnyObject {
+    func ptSearchResultViewController(_ controller: PTSearchResultViewController, didTap podcast: PTPodcast)
+    func ptSearchResultViewController(_ controller: PTSearchResultViewController, didTap episode: PTEpisode)
+}
+
 class PTSearchResultViewController: UIViewController {
     
+    weak var delegate: PTSearchResultViewControllerDelegate?
     private let resultsView = PTSearchResultsView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         view.addSubview(resultsView)
+        resultsView.delegate = self
         addConstraints()
     }
     
@@ -31,4 +38,16 @@ class PTSearchResultViewController: UIViewController {
         resultsView.load(with: results)
     }
 
+}
+
+// MARK: - Search results view delegate
+extension PTSearchResultViewController: PTSearchResultsViewDelegate {
+    
+    func ptSearchResultsView(_ searchResultsView: PTSearchResultsView, didSelectItem podcast: PTPodcast) {
+        delegate?.ptSearchResultViewController(self, didTap: podcast)
+    }
+    
+    func ptSearchResultsView(_ searchResultsView: PTSearchResultsView, didSelectItem episode: PTEpisode) {
+        delegate?.ptSearchResultViewController(self, didTap: episode)
+    }
 }

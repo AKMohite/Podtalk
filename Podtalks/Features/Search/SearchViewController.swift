@@ -28,6 +28,9 @@ final class SearchViewController: UIViewController {
         searchController.searchResultsUpdater = self
         navigationItem.searchController = searchController
         view.addSubview(searchView)
+        if let searchController = searchController.searchResultsController as? PTSearchResultViewController {
+            searchController.delegate = self
+        }
         addConstraints()
         searchView.delegate = self
         viewModel.delegate = self
@@ -41,6 +44,21 @@ final class SearchViewController: UIViewController {
             searchView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
             searchView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+    }
+}
+
+// MARK: - Search result view controller delegate
+extension SearchViewController: PTSearchResultViewControllerDelegate {
+    
+    func ptSearchResultViewController(_ controller: PTSearchResultViewController, didTap podcast: PTPodcast) {
+        let vc = PodcastDetailViewController(podcast: podcast)
+        vc.title = podcast.name
+        vc.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func ptSearchResultViewController(_ controller: PTSearchResultViewController, didTap episode: PTEpisode) {
+        
     }
 }
 
