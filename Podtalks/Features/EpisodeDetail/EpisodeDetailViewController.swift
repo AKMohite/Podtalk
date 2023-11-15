@@ -9,6 +9,7 @@ import UIKit
 
 class EpisodeDetailViewController: UIViewController {
 
+    private let detailsView = PTEpisodeDetailView()
     private let viewModel = EpisodeDetailViewmodel()
     private let episode: PTEpisode
     
@@ -23,9 +24,21 @@ class EpisodeDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemIndigo
+        view.backgroundColor = .systemBackground
+        detailsView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(detailsView)
+        addConstraints()
         viewModel.delegate = self
         viewModel.fetchDetails(with: episode)
+    }
+    
+    private func addConstraints() {
+        NSLayoutConstraint.activate([
+            detailsView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            detailsView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
+            detailsView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
+            detailsView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
     }
 
 }
@@ -33,9 +46,9 @@ class EpisodeDetailViewController: UIViewController {
 // MARK: - View model delegate
 extension EpisodeDetailViewController: EpisodeDetailViewmodelDelegate {
     
-    func loadData(with details: PTEpisode) {
+    func loadData(with details: PTEpisodeDetail) {
         DispatchQueue.main.async {
-            print(details)
+            self.detailsView.configure(with: details)
         }
     }
     

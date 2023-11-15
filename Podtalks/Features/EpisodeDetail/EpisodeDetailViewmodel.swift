@@ -8,7 +8,7 @@
 import Foundation
 
 protocol EpisodeDetailViewmodelDelegate: AnyObject {
-    func loadData(with details: PTEpisode)
+    func loadData(with details: PTEpisodeDetail)
     func showError(with message: String?)
 }
 

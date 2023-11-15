@@ -8,5 +8,5 @@
 import Foundation
 
 protocol EpisodeRepository {
-    func fetchDetails(with id: String) async throws -> PTEpisode
+    func fetchDetails(with id: String) async throws -> PTEpisodeDetail
 }
