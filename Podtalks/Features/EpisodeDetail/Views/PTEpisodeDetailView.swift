@@ -61,6 +61,20 @@ class PTEpisodeDetailView: UIView {
         label.numberOfLines = 0
         return label
     }()
+    private let publishedDate: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 16, weight: .thin)
+        label.numberOfLines = 1
+        return label
+    }()
+    private let duration: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 16, weight: .thin)
+        label.numberOfLines = 1
+        return label
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -70,6 +84,8 @@ class PTEpisodeDetailView: UIView {
         addSubview(podcastTitle)
         addSubview(title)
         addSubview(desc)
+        addSubview(publishedDate)
+        addSubview(duration)
         addConstraints()
         podcastTitle.addTarget(self, action: #selector(onPodcastTap), for: .touchUpInside)
     }
@@ -102,7 +118,7 @@ class PTEpisodeDetailView: UIView {
             
             episodeImg.widthAnchor.constraint(equalToConstant: 150),
             episodeImg.heightAnchor.constraint(equalToConstant: 150),
-            episodeImg.topAnchor.constraint(equalTo: topAnchor, constant: 40),
+            episodeImg.topAnchor.constraint(equalTo: topAnchor, constant: 20),
             episodeImg.centerXAnchor.constraint(equalTo: centerXAnchor),
             
             title.topAnchor.constraint(equalTo: episodeImg.bottomAnchor, constant: 8),
@@ -112,6 +128,16 @@ class PTEpisodeDetailView: UIView {
             podcastTitle.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 8),
             podcastTitle.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
             podcastTitle.rightAnchor.constraint(equalTo: rightAnchor, constant: -20),
+            
+            publishedDate.topAnchor.constraint(equalTo: podcastTitle.bottomAnchor, constant: 12),
+            publishedDate.leftAnchor.constraint(equalTo: leftAnchor, constant: 16),
+            
+            duration.topAnchor.constraint(equalTo: podcastTitle.bottomAnchor, constant: 12),
+            duration.rightAnchor.constraint(equalTo: rightAnchor, constant: -16),
+            
+            desc.topAnchor.constraint(equalTo: publishedDate.bottomAnchor, constant: 8),
+            desc.leftAnchor.constraint(equalTo: leftAnchor, constant: 16),
+            desc.rightAnchor.constraint(equalTo: rightAnchor, constant: -16),
         ])
     }
     
@@ -120,6 +146,9 @@ class PTEpisodeDetailView: UIView {
         let episode = details.episode
         let podcast = details.podcast
         title.text = episode.title
+        desc.text = episode.description.htmlToString
+        publishedDate.text = episode.publishedDate.formatted()
+        duration.text = episode.duration
         podcastTitle.setTitle(podcast.name, for: .normal)
         podcastTitle.tintColor = bgView.backgroundColor
         imageTaskId = imageLoader.loadImage(episode.thumbnail) { [weak self] result in
