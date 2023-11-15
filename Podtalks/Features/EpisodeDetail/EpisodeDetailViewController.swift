@@ -28,6 +28,7 @@ class EpisodeDetailViewController: UIViewController {
         detailsView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(detailsView)
         addConstraints()
+        detailsView.delegate = self
         viewModel.delegate = self
         viewModel.fetchDetails(with: episode)
     }
@@ -56,4 +57,14 @@ extension EpisodeDetailViewController: EpisodeDetailViewmodelDelegate {
         
     }
     
+}
+
+// MARK: - Detail view delegate
+extension EpisodeDetailViewController: PTEpisodeDetailViewDelegate {
+    func ptEpisodeDetailView(_ detailView: PTEpisodeDetailView, didTap podcast: PTPodcast) {
+        let vc = PodcastDetailViewController(podcast: podcast)
+        vc.title = podcast.name
+        vc.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }

@@ -7,10 +7,16 @@
 
 import UIKit
 
+protocol PTEpisodeDetailViewDelegate: AnyObject {
+    func ptEpisodeDetailView(_ detailView: PTEpisodeDetailView, didTap podcast: PTPodcast)
+}
+
 class PTEpisodeDetailView: UIView {
     
+    weak var delegate: PTEpisodeDetailViewDelegate?
     private let imageLoader = PTImageLoader()
     private var imageTaskId: UUID?
+    private var details: PTEpisodeDetail?
     private let bgView: UIView = {
         let uiView = UIView()
         uiView.translatesAutoresizingMaskIntoConstraints = false
@@ -30,13 +36,15 @@ class PTEpisodeDetailView: UIView {
         img.layer.masksToBounds = true
         return img
     }()
-    private let podcastTitle: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 18, weight: .bold)
-        label.textAlignment = .center
-        label.numberOfLines = 0
-        return label
+    private let podcastTitle: UIButton = {
+        var filled = UIButton.Configuration.borderless()
+        filled.buttonSize = .medium
+        filled.image = UIImage(systemName: "chevron.right")
+        filled.imagePlacement = .trailing
+        filled.imagePadding = 5
+        let btn = UIButton(configuration: filled, primaryAction: nil)
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        return btn
     }()
     private let title: UILabel = {
         let label = UILabel()
@@ -63,6 +71,7 @@ class PTEpisodeDetailView: UIView {
         addSubview(title)
         addSubview(desc)
         addConstraints()
+        podcastTitle.addTarget(self, action: #selector(onPodcastTap), for: .touchUpInside)
     }
     
     required init?(coder: NSCoder) {
@@ -75,6 +84,13 @@ class PTEpisodeDetailView: UIView {
             imageLoader.cancelLoad(id)
         }
         imageTaskId = nil
+    }
+    
+    @objc
+    private func onPodcastTap(_ sender: UIButton) {
+        if let podcast = details?.podcast {
+            delegate?.ptEpisodeDetailView(self, didTap: podcast)
+        }
     }
     
     private func addConstraints() {
@@ -100,11 +116,12 @@ class PTEpisodeDetailView: UIView {
     }
     
     func configure(with details: PTEpisodeDetail) {
+        self.details = details
         let episode = details.episode
         let podcast = details.podcast
         title.text = episode.title
-        podcastTitle.text = podcast.name
-        podcastTitle.textColor = bgView.backgroundColor ?? .systemIndigo
+        podcastTitle.setTitle(podcast.name, for: .normal)
+        podcastTitle.tintColor = bgView.backgroundColor
         imageTaskId = imageLoader.loadImage(episode.thumbnail) { [weak self] result in
             switch result {
                 case .success(let data):
