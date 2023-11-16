@@ -24,7 +24,13 @@ class PTImageLoader {
         
         let uuid = UUID()
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            defer {self.runningRequests.removeValue(forKey: uuid) }
+            defer {
+                if self.runningRequests.contains(where: { key, _ in
+                    key == uuid
+                }) {
+                    self.runningRequests.removeValue(forKey: uuid)
+                }
+            }
             if let data = data, let image = UIImage(data: data) {
                 self.loadedImages[url.absoluteString] = image
                 completion(.success(image))
