@@ -17,6 +17,16 @@ class PTEpisodeDetailView: UIView {
     private let imageLoader = PTImageLoader()
     private var imageTaskId: UUID?
     private var details: PTEpisodeDetail?
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        return scrollView
+    }()
+    private let scrollViewContainer: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
     private let bgView: UIView = {
         let uiView = UIView()
         uiView.translatesAutoresizingMaskIntoConstraints = false
@@ -79,13 +89,15 @@ class PTEpisodeDetailView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
-        addSubview(bgView)
-        addSubview(episodeImg)
-        addSubview(podcastTitle)
-        addSubview(title)
-        addSubview(desc)
-        addSubview(publishedDate)
-        addSubview(duration)
+        addSubview(scrollView)
+        scrollView.addSubview(scrollViewContainer)
+        scrollViewContainer.addSubview(bgView)
+        scrollViewContainer.addSubview(episodeImg)
+        scrollViewContainer.addSubview(podcastTitle)
+        scrollViewContainer.addSubview(title)
+        scrollViewContainer.addSubview(desc)
+        scrollViewContainer.addSubview(publishedDate)
+        scrollViewContainer.addSubview(duration)
         addConstraints()
         podcastTitle.addTarget(self, action: #selector(onPodcastTap), for: .touchUpInside)
     }
@@ -111,33 +123,45 @@ class PTEpisodeDetailView: UIView {
     
     private func addConstraints() {
         NSLayoutConstraint.activate([
-            bgView.heightAnchor.constraint(equalToConstant: 100),
-            bgView.topAnchor.constraint(equalTo: topAnchor),
-            bgView.leftAnchor.constraint(equalTo: leftAnchor),
-            bgView.rightAnchor.constraint(equalTo: rightAnchor),
+            scrollView.topAnchor.constraint(equalTo: topAnchor),
+            scrollView.leftAnchor.constraint(equalTo: leftAnchor),
+            scrollView.rightAnchor.constraint(equalTo: rightAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
+            scrollViewContainer.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            scrollViewContainer.leftAnchor.constraint(equalTo: scrollView.leftAnchor),
+            scrollViewContainer.rightAnchor.constraint(equalTo: scrollView.rightAnchor),
+            scrollViewContainer.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            scrollViewContainer.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            
+            bgView.heightAnchor.constraint(equalToConstant: 100),
+            bgView.topAnchor.constraint(equalTo: scrollViewContainer.topAnchor),
+            bgView.leftAnchor.constraint(equalTo: scrollViewContainer.leftAnchor),
+            bgView.rightAnchor.constraint(equalTo: scrollViewContainer.rightAnchor),
+
             episodeImg.widthAnchor.constraint(equalToConstant: 150),
             episodeImg.heightAnchor.constraint(equalToConstant: 150),
-            episodeImg.topAnchor.constraint(equalTo: topAnchor, constant: 20),
-            episodeImg.centerXAnchor.constraint(equalTo: centerXAnchor),
-            
+            episodeImg.topAnchor.constraint(equalTo: scrollViewContainer.topAnchor, constant: 20),
+            episodeImg.centerXAnchor.constraint(equalTo: scrollViewContainer.centerXAnchor),
+
             title.topAnchor.constraint(equalTo: episodeImg.bottomAnchor, constant: 8),
-            title.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
-            title.rightAnchor.constraint(equalTo: rightAnchor, constant: -20),
-            
+            title.leftAnchor.constraint(equalTo: scrollViewContainer.leftAnchor, constant: 20),
+            title.rightAnchor.constraint(equalTo: scrollViewContainer.rightAnchor, constant: -20),
+
             podcastTitle.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 8),
-            podcastTitle.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
-            podcastTitle.rightAnchor.constraint(equalTo: rightAnchor, constant: -20),
-            
+            podcastTitle.leftAnchor.constraint(equalTo: scrollViewContainer.leftAnchor, constant: 20),
+            podcastTitle.rightAnchor.constraint(equalTo: scrollViewContainer.rightAnchor, constant: -20),
+
             publishedDate.topAnchor.constraint(equalTo: podcastTitle.bottomAnchor, constant: 12),
-            publishedDate.leftAnchor.constraint(equalTo: leftAnchor, constant: 16),
-            
+            publishedDate.leftAnchor.constraint(equalTo: scrollViewContainer.leftAnchor, constant: 16),
+
             duration.topAnchor.constraint(equalTo: podcastTitle.bottomAnchor, constant: 12),
-            duration.rightAnchor.constraint(equalTo: rightAnchor, constant: -16),
-            
+            duration.rightAnchor.constraint(equalTo: scrollViewContainer.rightAnchor, constant: -16),
+//
             desc.topAnchor.constraint(equalTo: publishedDate.bottomAnchor, constant: 8),
-            desc.leftAnchor.constraint(equalTo: leftAnchor, constant: 16),
-            desc.rightAnchor.constraint(equalTo: rightAnchor, constant: -16),
+            desc.leftAnchor.constraint(equalTo: scrollViewContainer.leftAnchor, constant: 16),
+            desc.rightAnchor.constraint(equalTo: scrollViewContainer.rightAnchor, constant: -16),
+            desc.bottomAnchor.constraint(equalTo: scrollViewContainer.bottomAnchor, constant: -8)
         ])
     }
     
