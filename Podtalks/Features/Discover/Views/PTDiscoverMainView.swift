@@ -34,9 +34,9 @@ class PTDiscoverMainView: UIView {
         
         let collectionView = createCollectionView()
         self.collectionView = collectionView
-        
-        addSubview(loader)
+
         addSubview(collectionView)
+        addSubview(loader)
         addConstraints()
     }
     
