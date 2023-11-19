@@ -40,8 +40,8 @@ final class SearchViewModel {
     func search(with query: String) {
         Task {
             do {
-                async let podcasts = podcastRepo.searchPodcasts(with: query)
-                async let episodes = podcastRepo.searchEpisodes(with: query)
+                async let podcasts = podcastRepo.searchPodcasts(with: query, page: 1)
+                async let episodes = podcastRepo.searchEpisodes(with: query, page: 1)
                 let (podcastResults, episodeResults) = try await (podcasts, episodes)
                 let results = [
                     PTSearchResults.podcasts(podcastResults),
