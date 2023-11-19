@@ -63,10 +63,13 @@ final class PTPodcastRepository: PodcastRepository {
         return curatedList
     }
     
-    func searchPodcasts(with query: String) async throws -> [PTPodcast] {
+    func searchPodcasts(with query: String, page: Int) async throws -> [PTPodcast] {
+        let offset = (page - 1) * 10
         let queryParams = [
             "q": query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-            "type": "podcast"
+            "type": "podcast",
+            "offset": "\(offset)",
+            "page_size": "10"
         ]
 //        let results = try await api.execute(request: .init(endpoint: .search, queryParameters: queryParams), expecting: SearchPodcastDTO.self)
         let results = mockSearchPodcasts()
@@ -76,10 +79,13 @@ final class PTPodcastRepository: PodcastRepository {
         return podcasts
     }
     
-    func searchEpisodes(with query: String) async throws -> [PTEpisode] {
+    func searchEpisodes(with query: String, page: Int) async throws -> [PTEpisode] {
+        let offset = (page - 1) * 10
         let queryParams = [
             "q": query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-            "type": "episode"
+            "type": "episode",
+            "offset": "\(offset)",
+            "page_size": "10"
         ]
 //        let results = try await api.execute(request: .init(endpoint: .search, queryParameters: queryParams), expecting: SearchEpisodeDTO.self)
         let results = mockSearchEpisodes()
