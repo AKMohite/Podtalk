@@ -17,6 +17,13 @@ class PTEpisodeDetailView: UIView {
     private let imageLoader = PTImageLoader()
     private var imageTaskId: UUID?
     private var details: PTEpisodeDetail?
+    private let progress: UIActivityIndicatorView = {
+        let loader = UIActivityIndicatorView()
+        loader.translatesAutoresizingMaskIntoConstraints = false
+        loader.hidesWhenStopped = true
+        loader.startAnimating()
+        return loader
+    }()
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -25,6 +32,7 @@ class PTEpisodeDetailView: UIView {
     private let scrollViewContainer: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.isHidden = true
         return view
     }()
     private let bgView: UIView = {
@@ -98,6 +106,7 @@ class PTEpisodeDetailView: UIView {
         scrollViewContainer.addSubview(desc)
         scrollViewContainer.addSubview(publishedDate)
         scrollViewContainer.addSubview(duration)
+        addSubview(progress)
         addConstraints()
         podcastTitle.addTarget(self, action: #selector(onPodcastTap), for: .touchUpInside)
     }
@@ -123,6 +132,11 @@ class PTEpisodeDetailView: UIView {
     
     private func addConstraints() {
         NSLayoutConstraint.activate([
+            progress.widthAnchor.constraint(equalToConstant: 100),
+            progress.heightAnchor.constraint(equalToConstant: 100),
+            progress.centerXAnchor.constraint(equalTo: centerXAnchor),
+            progress.centerYAnchor.constraint(equalTo: centerYAnchor),
+            
             scrollView.topAnchor.constraint(equalTo: topAnchor),
             scrollView.leftAnchor.constraint(equalTo: leftAnchor),
             scrollView.rightAnchor.constraint(equalTo: rightAnchor),
@@ -166,6 +180,7 @@ class PTEpisodeDetailView: UIView {
     }
     
     func configure(with details: PTEpisodeDetail) {
+        progress.stopAnimating()
         self.details = details
         let episode = details.episode
         let podcast = details.podcast
@@ -175,6 +190,7 @@ class PTEpisodeDetailView: UIView {
         duration.text = episode.duration
         podcastTitle.setTitle(podcast.name, for: .normal)
         podcastTitle.tintColor = bgView.backgroundColor
+        scrollViewContainer.isHidden = false
         imageTaskId = imageLoader.loadImage(episode.thumbnail) { [weak self] result in
             switch result {
                 case .success(let data):
