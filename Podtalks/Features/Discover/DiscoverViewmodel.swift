@@ -39,9 +39,9 @@ final class DiscoverViewmodel {
         Task {
             do {
                 self.genres = try await genresRepo.getAll()
-                async let bestPodcasts = podcastsRepo.getBestPodcasts()
-                async let recentAddedPodcast = podcastsRepo.getRecentAddedPodcasts()
-                async let curatedList = podcastsRepo.getCuratedPodcasts()
+                async let bestPodcasts = podcastsRepo.getBestPodcasts(page: 1)
+                async let recentAddedPodcast = podcastsRepo.getRecentAddedPodcasts(page: 1)
+                async let curatedList = podcastsRepo.getCuratedPodcasts(page: 1)
                 let (podcasts, curatedPodcasts, newAddedPodcast) = try await (bestPodcasts, curatedList, recentAddedPodcast)
                 self.bestPodcasts = podcasts
                 self.curatedPodcasts = curatedPodcasts

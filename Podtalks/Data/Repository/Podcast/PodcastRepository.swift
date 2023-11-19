@@ -8,10 +8,10 @@
 import Foundation
 
 protocol PodcastRepository {
-    func getBestPodcasts() async throws -> [PTPodcast]
-    func getRecentAddedPodcasts() async throws -> [PTPodcast]
+    func getBestPodcasts(page: Int) async throws -> [PTPodcast]
+    func getRecentAddedPodcasts(page: Int) async throws -> [PTPodcast]
     func fetchDetails(for id: String) async throws -> PTPodcastDetails
-    func getCuratedPodcasts() async throws -> [CuratedPodcast]
+    func getCuratedPodcasts(page: Int) async throws -> [CuratedPodcast]
     func searchPodcasts(with query: String) async throws -> [PTPodcast]
     func searchEpisodes(with query: String) async throws -> [PTEpisode]
 }

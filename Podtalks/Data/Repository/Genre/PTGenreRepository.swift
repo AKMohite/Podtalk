@@ -35,7 +35,10 @@ final class PTGenreRepository: GenreRepository {
     }
     
     fileprivate func fetchGenresFromRemote() async throws -> [TalkGenre] {
-        let dto = try await apiClient.execute(request: PodtalkHttpRequest(endpoint: .genres), expecting: GenresDTO.self)
+        let queryParams = [
+            "top_level_only" : "1" // If 1, yes, just show top level genres. If 0, no, show all genres.
+        ]
+        let dto = try await apiClient.execute(request: PodtalkHttpRequest(endpoint: .genres, queryParameters: queryParams), expecting: GenresDTO.self)
         _ = try await genresDAO.addAll(dto: dto.genres)
         let genres = dto.genres.compactMap { genre in
             TalkGenre(id: genre.id, name: genre.name)

@@ -17,13 +17,23 @@ final class PTPodcastRepository: PodcastRepository {
         self.genreRepo = genreRepo
     }
     
-    func getBestPodcasts() async throws -> [PTPodcast] {
-        let paramters = ["sort" : "listen_score"]
+    func getBestPodcasts(page: Int) async throws -> [PTPodcast] {
+        let paramters = [
+            "sort" : "listen_score",
+            "page" : "\(page)",
+            "safe_mode" : "0", // Whether or not to exclude podcasts with explicit language. 1 is yes, and 0 is no.
+            "region" : "us"
+        ]
         return try await getPodcasts(with: paramters)
     }
     
-    func getRecentAddedPodcasts() async throws -> [PTPodcast] {
-        let paramters = ["sort" : "recent_added_first"]
+    func getRecentAddedPodcasts(page: Int) async throws -> [PTPodcast] {
+        let paramters = [
+            "sort" : "recent_added_first",
+            "page" : "\(page)",
+            "safe_mode" : "0", // Whether or not to exclude podcasts with explicit language. 1 is yes, and 0 is no.
+            "region" : "us"
+        ]
         return try await getPodcasts(with: paramters)
     }
     
@@ -42,7 +52,7 @@ final class PTPodcastRepository: PodcastRepository {
         return details
     }
     
-    func getCuratedPodcasts() async throws -> [CuratedPodcast] {
+    func getCuratedPodcasts(page: Int) async throws -> [CuratedPodcast] {
         let dto = try await api.execute(request: .init(endpoint: .curated_podcasts), expecting: CuratedPodcastsDTO.self)
         let curatedList: [CuratedPodcast] = dto.curated_lists.map { curatedPodcasts in
             let podcasts = curatedPodcasts.podcasts.map { podcast in
