@@ -37,8 +37,12 @@ final class PTPodcastRepository: PodcastRepository {
         return try await getPodcasts(with: paramters)
     }
     
-    func fetchDetails(for id: String) async throws -> PTPodcastDetails {
-        let request = PodtalkHttpRequest(endpoint: .podcasts, pathSegments: [id])
+    func fetchDetails(for id: String, with nextEpisodeDate: String?) async throws -> PTPodcastDetails {
+        let queryParams = [
+            "sort" : "recent_first",
+            "next_episode_pub_date" : nextEpisodeDate ?? ""
+        ]
+        let request = PodtalkHttpRequest(endpoint: .podcasts, pathSegments: [id], queryParameters: queryParams)
         let dto = try await api.execute(request: request, expecting: PodcastDetailDTO.self)
         let episodes = dto.episodes.compactMap { episode in
             PTEpisode(id: episode.id, title: episode.title, description: episode.description, audio: URL(string: episode.audio), image: URL(string: episode.image), thumbnail: URL(string: episode.thumbnail), audioDuration: episode.audio_length_sec, publishedDate: episode.pub_date_ms)

@@ -24,7 +24,7 @@ final class PodcastDetailViewModel {
     func fetchDetails(with podcast: PTPodcast) {
         Task {
             do {
-                let details = try await repo.fetchDetails(for: podcast.id)
+                let details = try await repo.fetchDetails(for: podcast.id, with: nil)
                 DispatchQueue.main.async {
                     self.delegate?.updateUI(with: details)
                 }
