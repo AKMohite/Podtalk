@@ -123,11 +123,11 @@ extension PTDiscoverMainView {
         let section = NSCollectionLayoutSection(group: group)
         section.visibleItemsInvalidationHandler = { (items, offset, environment) in
             items.forEach { item in
-            let distanceFromCenter = abs((item.frame.midX - offset.x) - environment.container.contentSize.width / 2.0)
-            let minScale: CGFloat = 0.8
-            let maxScale: CGFloat = 1.0
-            let scale = max(maxScale - (distanceFromCenter / environment.container.contentSize.width), minScale)
-            item.transform = CGAffineTransform(scaleX: scale, y: scale)
+                let distanceFromCenter = abs((item.frame.midX - offset.x) - environment.container.contentSize.width / 2.0)
+                let minScale: CGFloat = 0.8
+                let maxScale: CGFloat = 1.0
+                let scale = max(maxScale - (distanceFromCenter / environment.container.contentSize.width), minScale)
+                item.transform = CGAffineTransform(scaleX: scale, y: scale)
             }
         }
         section.orthogonalScrollingBehavior = .paging
